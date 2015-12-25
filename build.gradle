@@ -33,19 +33,6 @@ allprojects {
     maven { url 'http://repo.sinndev.com/content/groups/public' }
   }
 
-  plugins.withType(JavaPlugin) {
-    //		compileJava.options.fork = true
-    //		compileJava.options.forkOptions.executable = 'C:/Program Files/Java/jdk1.7.0_79/bin/javac'
-    sourceCompatibility = 1.7
-    plugins.withType(EclipsePlugin) {
-      eclipse.classpath.file.whenMerged { cp ->
-        cp.entries.find { it.kind == 'con' &&it.path.contains('JRE_CONTAINER') }.each {
-          it.path += "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_79"
-        }
-      }
-    }
-  }
-
   plugins.withType(EclipsePlugin) {
     cleanEclipse << {
       delete('.settings')
