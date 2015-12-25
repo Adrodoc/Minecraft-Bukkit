@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '0.7'
+
+dependencies {
+	compile project(':Adrodoc55-Commons')
+	compile project(':Minecraft-Commons')
+
+	compile libs.terrania_core
+
+	compile libs.bukkit
+	compile libs.joda_time
+	compile libs.worldedit
+	compile libs.worldguard
+}
+
+evaluationDependsOn(':Minecraft-Commons')
+evaluationDependsOn(':Adrodoc55-Commons')
+def libJars = files(project(':Minecraft-Commons').jar, project(':Adrodoc55-Commons').jar, getResolvedArtifacts(libs.joda_time))
+
+jar {
+	destinationDir = distsDir
+	String classpath = libJars.collect{ 'libs/' + it.name }.join(' ')
+	manifest { attributes 'Class-Path': classpath }
+}
+
+task collectLibs(type: Copy) {
+	from libJars
+	into new File(distsDir, 'libs')
+}
+assemble.dependsOn collectLibs

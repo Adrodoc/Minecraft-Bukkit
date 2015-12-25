@@ -1,0 +1,5 @@
+512 JAXBException beim Speichern des GSManagers für Welt '%s' mit UUID '%s'
+GSManager.save()
+
+513 JAXBException beim Laden des GSManagers für Welt '%s' mit UUID '%s'
+GSManager.load(World)

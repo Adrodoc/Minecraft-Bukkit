@@ -1,0 +1,9 @@
+name: Terrania-Friends
+author: Adrodoc55
+version: 0.1
+main: de.adrodoc55.minecraft.plugins.terrania.friends.TerraniaFriendsPlugin
+
+commands:
+    friends:
+       description: Befehle zum Verwalten der Freunde
+       usage: /friends

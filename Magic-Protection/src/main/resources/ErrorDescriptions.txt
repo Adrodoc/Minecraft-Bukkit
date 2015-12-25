@@ -1,0 +1,35 @@
+500	Chunkprotection für Chunk '%s' konnte wegen fehlerhaftem Dateiinhalt nicht geladen werden
+Auskommentiert
+
+501	IOException beim Laden der Chunkprotection für Chunk: '%s'
+Auskommentiert
+
+502 IOException beim Laden der Properties des Spielers '%s'
+PlayerManager.getPlayerProperties(Player player)
+
+503 IOException beim Setzen der Properties des Spielers '%s'
+PlayerManager.setPlayerProperty(Player player, String key, String value)
+
+504 IOException beim Erstellen der Properties-Datei des Spielers '%s'
+PlayerManager.getPlayerPropertiesFile(Player player)
+
+505 IOException beim Löschen der Protection des Blocks '%d' im Chunk '%s'
+Auskommentiert
+
+506 IOException beim Setzten der Protection des Blocks '%d' im Chunk '%s'
+Auskommentiert
+
+507 Der Chunk-Name '%s' ist ungültig
+IllegalChunkNameException(String chunkName, Throwable cause)
+
+508 Invalide Block-Data eines hängenden Blocks: Type = '%s'
+ProtectionManager.getBlockDependency(Block block)
+
+509 IOException beim Leeren der Protection des Chunks '%s'
+Auskommentiert
+
+510 IOException beim Speichern der Protection des Chunks '%s'
+ProtectionManager.saveChunkProtection(Chunk chunk)
+
+511 IOException beim Erzeugen der Datei für den Chunk '%s'
+ProtectionManager.loadChunkProtection(Chunk chunk)

@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '0.2'
+
+dependencies {
+	compile libs.bukkit
+	compile project(':Adrodoc55-Commons')
+	compile project(':Minecraft-Commons')
+	compile project(':Magic-Protection')
+//	compile libs.particleeffect
+}
+
+evaluationDependsOn(':Minecraft-Commons')
+def libJars = files(
+		project(':Adrodoc55-Commons').jar,
+		project(':Minecraft-Commons').jar
+//		getResolvedArtifacts(libs.particleeffect)
+	)
+
+jar {
+	destinationDir = distsDir
+	String classpath = libJars.collect{ 'libs/' + it.name }.join(' ')
+	manifest {
+		attributes 'Class-Path': classpath
+	}
+}
+
+//task collectLibs(type: Copy) {
+//	from libJars
+//	into new File(distsDir, 'libs')
+//}
+//assemble.dependsOn collectLibs

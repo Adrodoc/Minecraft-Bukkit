@@ -1,0 +1,25 @@
+name: Terrania-GS
+author: Adrodoc55
+version: 0.7
+main: de.adrodoc55.minecraft.plugins.terrania.gs.TerraniaGsPlugin
+
+depend: [WorldGuard]
+
+commands:
+    gs:
+       description: Grundstueck Befehle
+       usage: /gs
+
+permissions:
+    terrania:
+        gs:
+            commands:
+                gs:
+                    create: op
+                    delete: op
+                    setprice: op
+                    addmember: op
+                    info: op
+                    list: op
+                    update: op
+                    save: op

@@ -1,0 +1,15 @@
+name: Terrania-Lock
+author: Adrodoc55
+version: 0.1
+main: de.adrodoc55.minecraft.plugins.terrania.lock.TerraniaLockPlugin
+
+depend: [Magic-Protection]
+
+commands:
+    lock:
+       description: Sperrt den Block ab, der angesehen wird. Nutzbar fuer z.B. Truhen und Tueren
+       usage: /lock
+    unlock:
+       description: Entsperrt den Block, der angesehen wird. Nutzbar fuer z.B. Truhen und Tueren
+       usage: /lock
+

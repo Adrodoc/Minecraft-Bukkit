@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '0.1'
+
+dependencies {
+	compile project(':Adrodoc55-Commons')
+	compile project(':Minecraft-Commons')
+
+	compile libs.bukkit
+}
+
+evaluationDependsOn(':Minecraft-Commons')
+evaluationDependsOn(':Adrodoc55-Commons')
+def libJars = files(project(':Minecraft-Commons').jar, project(':Adrodoc55-Commons').jar)
+
+jar {
+	destinationDir = distsDir
+	String classpath = libJars.collect{ 'libs/' + it.name }.join(' ')
+	manifest { attributes 'Class-Path': classpath }
+}
+
+task collectLibs(type: Copy) {
+	from libJars
+	into new File(distsDir, 'libs')
+}
+assemble.dependsOn collectLibs

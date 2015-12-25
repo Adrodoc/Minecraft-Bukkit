@@ -1,0 +1,9 @@
+name: Magic-Protection
+author: Adrodoc55
+version: 0.8
+main: de.adrodoc55.minecraft.plugins.magic_protection.MagicProtectionPlugin
+
+commands:
+    rang:
+       description: Get or set player raenge
+       usage: /rang <get|set> <player> ...
