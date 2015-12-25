@@ -7,7 +7,7 @@ ext.libs = [
   bukkit:	'org.bukkit:bukkit:+',
   joda_time:		'joda-time:joda-time:2.8.2',
   particleeffect:	'com.darkblade12:particleeffect:1.7@jar',
-  terrania_core:	files(new File(libDir, 'Terrania-Core_0.1a.jar')),
+  terrania_core:	files(new File(libDir, 'TerraniaCore-0.1a.jar')),
 
   //	worldedit:		files(new File(libDir, 'worldedit-bukkit-6.1.jar')),
   //	worldguard:		files(new File(libDir, 'worldguard-6.1.jar'))
