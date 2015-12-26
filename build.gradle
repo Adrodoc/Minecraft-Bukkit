@@ -11,8 +11,8 @@ ext.libs = [
 
   //	worldedit:		files(new File(libDir, 'worldedit-bukkit-6.1.jar')),
   //	worldguard:		files(new File(libDir, 'worldguard-6.1.jar'))
-  worldedit:		'com.sk89q:worldedit:+@jar',
-  worldguard:		'com.sk89q:worldguard:+@jar'
+  worldedit:		'com.sk89q:worldedit:5.6.3@jar',
+  worldguard:		'com.sk89q:worldguard:6.1@jar'
 ]
 
 task wrapper(type: Wrapper) {
