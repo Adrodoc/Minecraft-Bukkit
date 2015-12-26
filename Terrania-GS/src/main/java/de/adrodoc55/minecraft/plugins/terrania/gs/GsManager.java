@@ -273,7 +273,7 @@ public class GsManager {
     }
 
     private static void setDefaults(ProtectedRegion region) {
-        region.setPriority(10);
+        region.setPriority(20);
         region.setFlag(DefaultFlag.BUILD, State.ALLOW);
         region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.MEMBERS);
     }
