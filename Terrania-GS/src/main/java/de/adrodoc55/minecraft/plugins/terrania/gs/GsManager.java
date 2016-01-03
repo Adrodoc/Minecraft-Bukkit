@@ -3,18 +3,22 @@ package de.adrodoc55.minecraft.plugins.terrania.gs;
 import static de.adrodoc55.minecraft.plugins.terrania.gs.TerraniaGsPlugin.logger;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -23,9 +27,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.bukkit.World;
 import org.bukkit.block.Sign;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
@@ -67,7 +68,8 @@ public class GsManager {
     }
 
     private static File getGsDir() {
-        File gsDir = new File(TerraniaGsPlugin.instance().getDataFolder(), "grundstuecke");
+        File gsDir = new File(TerraniaGsPlugin.instance().getDataFolder(),
+                "grundstuecke");
         gsDir.mkdirs();
         return gsDir;
     }
@@ -103,9 +105,9 @@ public class GsManager {
             XmlGsRoot root = new XmlGsRoot(this);
             jaxbMarshaller.marshal(root, getGsFile(world));
         } catch (JAXBException ex) {
-            String errorMessage = String.format(
-                    "JAXBException beim Speichern des GSManagers für Welt '%s' mit UUID '%s'", world.getName(),
-                    world.getUID());
+            String errorMessage = String
+                    .format("JAXBException beim Speichern des GSManagers für Welt '%s' mit UUID '%s'",
+                            world.getName(), world.getUID());
             throw new PluginException(512, errorMessage, ex);
         }
     }
@@ -113,7 +115,8 @@ public class GsManager {
     private static GsManager load(World world) {
         String worldName = world.getName();
         UUID worldUuid = world.getUID();
-        String message = String.format("Lade Grundstücke für Welt '%s'", worldName);
+        String message = String.format("Lade Grundstücke für Welt '%s'",
+                worldName);
         logger().info(message);
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(XmlGsRoot.class);
@@ -126,8 +129,9 @@ public class GsManager {
             INSTANCES.put(worldUuid, instance);
             return instance;
         } catch (JAXBException ex) {
-            String errorMessage = String.format("JAXBException beim Laden des GSManagers für Welt '%s' mit UUID '%s'",
-                    worldName, worldUuid);
+            String errorMessage = String
+                    .format("JAXBException beim Laden des GSManagers für Welt '%s' mit UUID '%s'",
+                            worldName, worldUuid);
             throw new PluginException(513, errorMessage, ex);
         }
     }
@@ -149,28 +153,37 @@ public class GsManager {
     public void init() {
         updateAlleGrundstuecke();
 
-        Timer timer = new Timer(true);
-        // TODO Java 8:
-        // LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1)
-        // .atStartOfDay();
-        // Java 7:
-        LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1).toLocalDateTime(new LocalTime(0, 0));
+        // Java 8:
+        // @formatter:off
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Runnable command = () -> {
+            logger().info("Update alle Grundstücke");
+            updateAlleGrundstuecke();
+            logger().info("Update alle Grundstücke FINISHED");
+        };
+        LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
+        long initialDelay = LocalDateTime.now().until(atStartOfTomorrow, ChronoUnit.MINUTES);
+        long period = TimeUnit.DAYS.toMinutes(1);
+        scheduler.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.MINUTES);
+        // @formatter:on
 
-        // TODO Java 8:
-        // Date firstTime = Date.from(atStartOfTomorrow.atZone(
-        // ZoneId.systemDefault()).toInstant());
         // Java 7:
-        Date firstTime = atStartOfTomorrow.toDate(TimeZone.getDefault());
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Jeden Tag um 00:00 werden alle abgelaufenen Grundstücke
-                // freigegeben.
-                logger().info("Update alle Grundstücke");
-                updateAlleGrundstuecke();
-                logger().info("Update alle Grundstücke FINISHED");
-            }
-        }, firstTime, 1000 * 60 * 60 * 24 * 7);
+        // Timer timer = new Timer(true);
+        // LocalDateTime atStartOfTomorrow =
+        // LocalDate.now().plusDays(1).toLocalDateTime(new LocalTime(0, 0));
+        // Date firstTime = atStartOfTomorrow.toDate(TimeZone.getDefault());
+        // int period = 1000 * 60 * 60 * 24;
+        // timer.schedule(new TimerTask() {
+        // @Override
+        // public void run() {
+        // // Jeden Tag um 00:00 werden alle abgelaufenen Grundstücke
+        // // freigegeben.
+        // logger().info("Update alle Grundstücke");
+        // updateAlleGrundstuecke();
+        // logger().info("Update alle Grundstücke FINISHED");
+        // }
+        // }, firstTime, period);
+
     }
 
     public synchronized void updateAlleGrundstuecke() {
@@ -188,12 +201,13 @@ public class GsManager {
      * @return das Grundstück oder null.
      */
     public Grundstueck find(final Sign sign) {
-        Grundstueck grundstueck = CollectionUtils.find(getGrundstuecke(), new Closure<Grundstueck, Boolean>() {
-            @Override
-            public Boolean call(Grundstueck grundstueck) {
-                return grundstueck.getSign().equals(sign);
-            }
-        });
+        Grundstueck grundstueck = CollectionUtils.find(getGrundstuecke(),
+                new Closure<Grundstueck, Boolean>() {
+                    @Override
+                    public Boolean call(Grundstueck grundstueck) {
+                        return grundstueck.getSign().equals(sign);
+                    }
+                });
         return grundstueck;
     }
 
@@ -206,12 +220,13 @@ public class GsManager {
      * @return das Grundstück oder null.
      */
     public Grundstueck find(final String gsName) {
-        Grundstueck grundstueck = CollectionUtils.find(getGrundstuecke(), new Closure<Grundstueck, Boolean>() {
-            @Override
-            public Boolean call(Grundstueck grundstueck) {
-                return grundstueck.getName().equals(gsName);
-            }
-        });
+        Grundstueck grundstueck = CollectionUtils.find(getGrundstuecke(),
+                new Closure<Grundstueck, Boolean>() {
+                    @Override
+                    public Boolean call(Grundstueck grundstueck) {
+                        return grundstueck.getName().equals(gsName);
+                    }
+                });
         return grundstueck;
     }
 
@@ -232,8 +247,9 @@ public class GsManager {
             try {
                 gs.validate();
             } catch (ValidationException ex) {
-                String message = String.format("Lösche Grundstück %s in Welt %s. Grund: %s", gs.getName(),
-                        gs.getWorld().getName(), ex.getMessage());
+                String message = String.format(
+                        "Lösche Grundstück %s in Welt %s. Grund: %s",
+                        gs.getName(), gs.getWorld().getName(), ex.getMessage());
                 logger().warn(message);
                 iterator.remove();
             }
@@ -255,12 +271,15 @@ public class GsManager {
      *             wenn das Grundstück invalide ist.
      * @return true, falls das Element hinzugefügt wurde. Ansonsten false.
      */
-    public static boolean add(Grundstueck grundstueck) throws ValidationException {
+    public static boolean add(Grundstueck grundstueck)
+            throws ValidationException {
         grundstueck.validate();
         GsManager gsManager = getGSManager(grundstueck.getWorld());
         Grundstueck find = gsManager.find(grundstueck.getSign());
         if (find != null) {
-            String message = String.format("Dieses Schild wird bereits vom Grundstück %s verwendet", find.getName());
+            String message = String.format(
+                    "Dieses Schild wird bereits vom Grundstück %s verwendet",
+                    find.getName());
             throw new ValidationException(message);
         }
         // boolean contained =
@@ -275,7 +294,8 @@ public class GsManager {
     private static void setDefaults(ProtectedRegion region) {
         region.setPriority(20);
         region.setFlag(DefaultFlag.BUILD, State.ALLOW);
-        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.MEMBERS);
+        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(),
+                RegionGroup.MEMBERS);
     }
 
     /**
@@ -288,7 +308,8 @@ public class GsManager {
      * @return true, falls das Element enthalten war. Ansonsten false.
      */
     public static boolean remove(Grundstueck grundstueck) {
-        return getGSManager(grundstueck.getWorld()).grundstuecke.remove(grundstueck);
+        return getGSManager(grundstueck.getWorld()).grundstuecke
+                .remove(grundstueck);
     }
 
 }
