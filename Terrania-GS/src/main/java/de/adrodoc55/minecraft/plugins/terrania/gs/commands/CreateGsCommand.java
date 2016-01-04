@@ -114,7 +114,7 @@ public class CreateGsCommand extends GsCommand {
             if (!didNotYetExist) {
                 String message = String.format(
                         "Das Grundstück %s existiert bereits in der Welt %s.",
-                        grundstueck.getName(), world);
+                        grundstueck.getName(), world.getName());
                 MinecraftUtils.sendError(player, message);
                 context.setUsage("");
                 return false;
