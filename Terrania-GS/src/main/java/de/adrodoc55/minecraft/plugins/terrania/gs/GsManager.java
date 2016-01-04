@@ -331,12 +331,13 @@ public class GsManager {
 
     /**
      * Entfernt das Grundstück von dem passenden GSManager, falls das Element
-     * enthalten ist.<br>
-     * <br>
-     * Siehe {@link Set#remove Set.remove}
+     * enthalten ist. <br>
+     * Das Grundstueck wird hierdurch invalide. Siehe
+     * {@link Grundstueck#validate()}
      *
      * @param grundstueck
      * @return true, falls das Element enthalten war. Ansonsten false.
+     * @see Set#remove(Object o)
      */
     public static boolean remove(Grundstueck grundstueck) {
         GsManager gsm = getGSManager(grundstueck.getWorld());
