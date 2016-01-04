@@ -5,7 +5,6 @@ import static de.adrodoc55.minecraft.plugins.terrania.gs.TerraniaGsPlugin.logger
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,10 +13,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.JAXBContext;
@@ -44,7 +43,7 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.xml.XmlGsRoot;
 
 public class GsManager {
 
-    private static Map<UUID, GsManager> INSTANCES = new HashMap<UUID, GsManager>();
+    private static volatile Map<UUID, GsManager> INSTANCES = new HashMap<UUID, GsManager>();
 
     /**
      * Gibt eine unmodifiable Collection aller aktiven GSManager zurück.
@@ -136,32 +135,49 @@ public class GsManager {
         }
     }
 
-    private final World world;
+    private static ScheduledExecutorService scheduler;
 
-    private final Set<Grundstueck> grundstuecke;
+    private static ScheduledExecutorService getScheduler() {
+        if (scheduler == null) {
+            scheduler = Executors
+                    .newSingleThreadScheduledExecutor(new ThreadFactory() {
+                        private ThreadFactory defaultThreadFactory = Executors
+                                .defaultThreadFactory();
 
-    private GsManager(World world, XmlGsRoot root) {
-        this.world = world;
-        Set<XmlGs> xmlGrundstuecke = root.getGrundstueck();
-        grundstuecke = new HashSet<Grundstueck>(xmlGrundstuecke.size());
-        for (XmlGs xmlGs : xmlGrundstuecke) {
-            grundstuecke.add(new Grundstueck(world, xmlGs));
+                        @Override
+                        public Thread newThread(Runnable r) {
+                            Thread t = defaultThreadFactory.newThread(r);
+                            t.setDaemon(true);
+                            return t;
+                        }
+                    });
         }
-        init();
+        return scheduler;
     }
 
-    public void init() {
-        updateAlleGrundstuecke();
+    private static volatile boolean setup;
 
+    public static void setupUpdateScheduler() {
+        if (setup) {
+            return;
+        }
+        synchronized (GsManager.class) {
+            if (setup) {
+                return;
+            }
+            setup = true;
+        }
         // Java 8:
-        // @formatter:off
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = getScheduler();
         Runnable command = () -> {
             logger().info("Update alle Grundstücke");
-            updateAlleGrundstuecke();
+            for (GsManager gsm : GsManager.getActiveInstances()) {
+                gsm.updateAlleGrundstuecke();
+            }
             logger().info("Update alle Grundstücke FINISHED");
         };
-        LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
+        // @formatter:off
+        LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay().plusMinutes(1);
         long initialDelay = LocalDateTime.now().until(atStartOfTomorrow, ChronoUnit.MINUTES);
         long period = TimeUnit.DAYS.toMinutes(1);
         scheduler.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.MINUTES);
@@ -183,7 +199,21 @@ public class GsManager {
         // logger().info("Update alle Grundstücke FINISHED");
         // }
         // }, firstTime, period);
+    }
 
+    private final World world;
+
+    private final Set<Grundstueck> grundstuecke;
+
+    private GsManager(World world, XmlGsRoot root) {
+        this.world = world;
+        Set<XmlGs> xmlGrundstuecke = root.getGrundstueck();
+        grundstuecke = new HashSet<Grundstueck>(xmlGrundstuecke.size());
+        for (XmlGs xmlGs : xmlGrundstuecke) {
+            grundstuecke.add(new Grundstueck(world, xmlGs));
+        }
+        updateAlleGrundstuecke();
+        setupUpdateScheduler();
     }
 
     public synchronized void updateAlleGrundstuecke() {
@@ -251,6 +281,7 @@ public class GsManager {
                         "Lösche Grundstück %s in Welt %s. Grund: %s",
                         gs.getName(), gs.getWorld().getName(), ex.getMessage());
                 logger().warn(message);
+                gs.invalidate();
                 iterator.remove();
             }
         }
@@ -308,8 +339,9 @@ public class GsManager {
      * @return true, falls das Element enthalten war. Ansonsten false.
      */
     public static boolean remove(Grundstueck grundstueck) {
-        return getGSManager(grundstueck.getWorld()).grundstuecke
-                .remove(grundstueck);
+        GsManager gsm = getGSManager(grundstueck.getWorld());
+        grundstueck.invalidate();
+        return gsm.grundstuecke.remove(grundstueck);
     }
 
 }
