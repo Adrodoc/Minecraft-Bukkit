@@ -82,6 +82,7 @@ public class Grundstueck {
         for (int x = 0; x < 4; x++) {
             sign.setLine(x, "");
         }
+        sign.update();
         expiration = null;
         owner = null;
         price = Double.MAX_VALUE;
