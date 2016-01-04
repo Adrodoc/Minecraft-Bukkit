@@ -305,21 +305,20 @@ public class GsManager {
     public static boolean add(Grundstueck grundstueck)
             throws ValidationException {
         grundstueck.validate();
-        GsManager gsManager = getGSManager(grundstueck.getWorld());
-        Grundstueck find = gsManager.find(grundstueck.getSign());
+        GsManager gsm = getGSManager(grundstueck.getWorld());
+        Grundstueck find = gsm.find(grundstueck.getSign());
         if (find != null) {
             String message = String.format(
                     "Dieses Schild wird bereits vom Grundstück %s verwendet",
                     find.getName());
             throw new ValidationException(message);
         }
-        // boolean contained =
-        // gsManager.getGrundstuecke().contains(grundstueck);
-        // if (!contained) {
-        // gsManager.grundstuecke.add(grundstueck);
-        // }
-        setDefaults(grundstueck.getRegion());
-        return gsManager.grundstuecke.add(grundstueck);
+        boolean success = gsm.grundstuecke.add(grundstueck);
+        if(success) {
+            setDefaults(grundstueck.getRegion());
+            grundstueck.updateSignConent();
+        }
+        return success;
     }
 
     private static void setDefaults(ProtectedRegion region) {

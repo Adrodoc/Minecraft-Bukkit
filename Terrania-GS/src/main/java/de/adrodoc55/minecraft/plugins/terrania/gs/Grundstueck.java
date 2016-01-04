@@ -45,7 +45,6 @@ public class Grundstueck {
         this.name = name;
         this.sign = sign.getBlock();
         expiration = LocalDate.now().minusDays(1);
-        updateSignConent();
     }
 
     public Grundstueck(World world, XmlGs gs) {
@@ -190,7 +189,7 @@ public class Grundstueck {
      *             if this gs is invalid
      * @see Grundstueck#validate()
      */
-    public Sign getSign() {
+    public Sign getSign() throws ValidationException {
         validate();
         return getInvalidSign();
     }
