@@ -23,7 +23,7 @@ public class SetpriceGsCommand extends ConcreteGsCommand {
 		String price = context.get(PRICE);
 		try {
 			gs.setPrice(Double.parseDouble(price));
-			gs.updateSignConent();
+			gs.updateSignContent();
 		} catch (NumberFormatException ex) {
 			String message = String.format("%s ist keine gültige Zahl.", price);
 			MinecraftUtils.sendError(context.getSender(), message);

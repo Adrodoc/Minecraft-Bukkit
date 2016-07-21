@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -91,8 +92,7 @@ public class CreateGsCommand extends GsCommand {
         // MinecraftUtils.sendError(player, missingSignMessage);
         // return false;
         // }
-        @SuppressWarnings("deprecation")
-        Block signBlock = player.getTargetBlock(null, 10);
+        Block signBlock = player.getTargetBlock((Set<Material>) null, 10);
         World signWorld = signBlock.getWorld();
         BlockState state = signBlock.getState();
         if (!(state instanceof Sign)) {

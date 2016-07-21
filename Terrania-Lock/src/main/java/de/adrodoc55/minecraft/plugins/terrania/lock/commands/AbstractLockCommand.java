@@ -2,8 +2,10 @@ package de.adrodoc55.minecraft.plugins.terrania.lock.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -57,8 +59,7 @@ public abstract class AbstractLockCommand implements CommandHandler {
         }
         // Set<Material> transparent = new HashSet<Material>();
         // transparent.add(Material.AIR);
-        @SuppressWarnings("deprecation")
-        Block targetBlock = player.getTargetBlock(null, 10);
+        Block targetBlock = player.getTargetBlock((Set<Material>) null, 10);
         if (targetBlock == null) {
             String message = "Du musst einen Block ansehen um diesen Befehl auszuführen.";
             MinecraftUtils.sendError(player, message);

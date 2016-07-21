@@ -3,9 +3,9 @@ apply plugin: 'eclipse'
 File libDir = new File('../libs/')
 
 ext.libs = [
-  //	craftbukkit:	files(new File(libDir, 'craftbukkit.jar')),
-  bukkit:	'org.bukkit:bukkit:+',
-  joda_time:		'joda-time:joda-time:2.8.2',
+  bukkit:	files(new File(libDir, 'craftbukkit.jar')),
+//  bukkit:	'org.bukkit:bukkit:+',
+  // joda_time:		'joda-time:joda-time:2.8.2',
   particleeffect:	'com.darkblade12:particleeffect:1.7@jar',
   terrania_core:	files(new File(libDir, 'TerraniaCore-0.1a.jar')),
 
@@ -15,9 +15,7 @@ ext.libs = [
   worldguard:		'com.sk89q:worldguard:6.1@jar'
 ]
 
-task wrapper(type: Wrapper) {
-  gradleVersion = 2.9
-}
+task wrapper(type: Wrapper) { gradleVersion = 2.9 }
 
 ext.getResolvedArtifacts = { Object arg ->
   Dependency dep = dependencies.create arg
@@ -34,9 +32,7 @@ allprojects {
   }
 
   plugins.withType(EclipsePlugin) {
-    cleanEclipse << {
-      delete('.settings')
-    }
+    cleanEclipse << { delete('.settings') }
     tasks.eclipse.dependsOn cleanEclipse
   }
 
