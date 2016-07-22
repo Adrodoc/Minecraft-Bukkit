@@ -3,15 +3,16 @@ apply plugin: 'eclipse'
 File libDir = new File('../libs/')
 
 ext.libs = [
-  bukkit:	files(new File(libDir, 'craftbukkit.jar')),
+  bukkit:	files(new File(libDir, 'craftbukkit-1.10.jar')),
 //  bukkit:	'org.bukkit:bukkit:+',
   // joda_time:		'joda-time:joda-time:2.8.2',
-  particleeffect:	'com.darkblade12:particleeffect:1.7@jar',
-  terrania_core:	files(new File(libDir, 'TerraniaCore-0.1a.jar')),
+//  particleeffect:	'com.darkblade12:particleeffect:1.7@jar',
+  particleeffect: files(new File(libDir, 'particleeffect-1.7.jar')),
+  terrania_core:	files(new File(libDir, 'TerraniaCore.jar')),
 
-  //	worldedit:		files(new File(libDir, 'worldedit-bukkit-6.1.jar')),
+  worldedit:		files(new File(libDir, 'worldedit-bukkit-6.1.2.jar')),
   //	worldguard:		files(new File(libDir, 'worldguard-6.1.jar'))
-  worldedit:		'com.sk89q:worldedit:5.6.3@jar',
+//  worldedit:		'com.sk89q:worldedit:5.6.3@jar',
   worldguard:		'com.sk89q:worldguard:6.1@jar'
 ]
 

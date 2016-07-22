@@ -27,7 +27,7 @@ import de.adrodoc55.common.CommonUtils;
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 import de.adrodoc55.minecraft.plugins.terrania.gs.xml.XmlGs;
 import de.adrodoc55.minecraft.plugins.terrania.gs.xml.XmlSign;
-import me.leepreechaun.terraniacore.economy.EconomyManager;
+import me.leepreechaun.terraniacore.oekonomie.Wirtschaftsmanager;
 
 @XmlRootElement
 public class Grundstueck {
@@ -315,7 +315,7 @@ public class Grundstueck {
     if (isRented()) {
       throw new IllegalStateException("Dieses Grundstück ist bereits vermietet.");
     }
-    boolean paid = EconomyManager.payMoney(player, price);
+    boolean paid = Wirtschaftsmanager.removeMoney(player.getUniqueId(), price);
     Player onlinePlayer = player.getPlayer();
     if (paid) {
       setOwner(player);
@@ -343,7 +343,7 @@ public class Grundstueck {
       MinecraftUtils.sendMessage(player, message);
       return;
     }
-    boolean paid = EconomyManager.payMoney(getOwner(), price);
+    boolean paid = Wirtschaftsmanager.removeMoney(getOwner().getUniqueId(), price);
     Player onlinePlayer = getOwner().getPlayer();
     if (paid) {
       // Java 8:
