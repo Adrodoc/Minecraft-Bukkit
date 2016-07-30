@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
 import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
+import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
 
 @XmlRootElement(name = "grundstuecke")
 @XmlAccessorType(XmlAccessType.FIELD)

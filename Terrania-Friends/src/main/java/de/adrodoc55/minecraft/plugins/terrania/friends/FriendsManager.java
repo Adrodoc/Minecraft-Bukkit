@@ -19,8 +19,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import de.adrodoc55.common.collections.CollectionUtils;
-import de.adrodoc55.minecraft.plugins.terrania.friends.xml.XmlFriendOwner;
 import de.adrodoc55.minecraft.plugins.terrania.friends.xml.XmlFriend;
+import de.adrodoc55.minecraft.plugins.terrania.friends.xml.XmlFriendOwner;
 
 public class FriendsManager {
 
