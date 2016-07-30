@@ -172,12 +172,10 @@ public class GsManager {
       }
       logger().info("Update alle Grundstücke FINISHED");
     };
-    // @formatter:off
-        LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay().plusMinutes(1);
-        long initialDelay = LocalDateTime.now().until(atStartOfTomorrow, ChronoUnit.MINUTES);
-        long period = TimeUnit.DAYS.toMinutes(1);
-        scheduler.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.MINUTES);
-        // @formatter:on
+    LocalDateTime atStartOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay().plusMinutes(1);
+    long initialDelay = LocalDateTime.now().until(atStartOfTomorrow, ChronoUnit.MINUTES);
+    long period = TimeUnit.DAYS.toMinutes(1);
+    scheduler.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.MINUTES);
 
     // Java 7:
     // Timer timer = new Timer(true);

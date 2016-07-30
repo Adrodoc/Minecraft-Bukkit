@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
 
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.domains.PlayerDomain;
@@ -14,6 +15,7 @@ import de.adrodoc55.common.CommonUtils;
 import de.adrodoc55.minecraft.plugins.common.command.CommandContext;
 import de.adrodoc55.minecraft.plugins.common.command.ParameterList;
 import de.adrodoc55.minecraft.plugins.common.command.TabCompleteContext;
+import de.adrodoc55.minecraft.plugins.common.utils.InsufficientPermissionException;
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
 
@@ -24,7 +26,13 @@ public class InfoGsCommand extends ConcreteGsCommand {
   }
 
   @Override
-  protected boolean execute(CommandContext context, Grundstueck gs) {
+  protected boolean execute(CommandContext context, Grundstueck gs)
+      throws InsufficientPermissionException {
+    CommandSender sender = context.getSender();
+    if (!sender.equals(gs.getOwner())) {
+      MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+    }
+
     StringBuilder sb = new StringBuilder();
     sb.append("Informationen zum Grundstück " + gs.getName() + ":\n");
     OfflinePlayer owner = gs.getOwner();
@@ -53,7 +61,7 @@ public class InfoGsCommand extends ConcreteGsCommand {
     }
     sb.append("\n");
     String message = sb.toString();
-    MinecraftUtils.sendInfo(context.getSender(), message);
+    MinecraftUtils.sendInfo(sender, message);
     return true;
   }
 

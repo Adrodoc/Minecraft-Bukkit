@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.domains.DefaultDomain;
@@ -15,6 +16,7 @@ import de.adrodoc55.minecraft.plugins.common.command.CommandContext;
 import de.adrodoc55.minecraft.plugins.common.command.Parameter;
 import de.adrodoc55.minecraft.plugins.common.command.ParameterList;
 import de.adrodoc55.minecraft.plugins.common.command.TabCompleteContext;
+import de.adrodoc55.minecraft.plugins.common.utils.InsufficientPermissionException;
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
 
@@ -27,15 +29,20 @@ public class AddMemberGsCommand extends ConcreteGsCommand {
   }
 
   @Override
-  protected boolean execute(CommandContext context, Grundstueck gs) {
-    // FIXME: Permissions!!!
+  protected boolean execute(CommandContext context, Grundstueck gs)
+      throws InsufficientPermissionException {
+    CommandSender sender = context.getSender();
+    if (!sender.equals(gs.getOwner())) {
+      MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+    }
+
     DefaultDomain members = gs.getRegion().getMembers();
     String memberName = context.get(MEMBER);
     members.addPlayer(memberName);
     String message = String.format(
         "Der Spieler %s wurde erfolgreich dem Grundstück %s in der Welt %s hinzugefügt.",
-        memberName, gs.getName(), gs.getWorld());
-    MinecraftUtils.sendInfo(context.getSender(), message);
+        memberName, gs.getName(), gs.getWorld().getName());
+    MinecraftUtils.sendInfo(sender, message);
     return true;
   }
 

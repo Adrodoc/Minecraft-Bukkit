@@ -1,11 +1,11 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-version = '0.8'
+version = '0.9'
 
 dependencies {
-	compile project(':Adrodoc55-Commons')
+  compile project(':Adrodoc55-Commons')
 
-	compile libs.bukkit
-	compile libs.worldguard
+  compile libs.bukkit
+  compile libs.worldguard
 }

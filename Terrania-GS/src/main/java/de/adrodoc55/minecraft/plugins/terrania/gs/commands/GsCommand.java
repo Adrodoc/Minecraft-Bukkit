@@ -73,15 +73,9 @@ public abstract class GsCommand extends AbstractCommandHandler {
 
   public static final String COMMAND = "gs";
 
-  // private final String name;
-
   protected GsCommand(String name) {
     super(new String[] {COMMAND, name});
   }
-
-  // public final String getName() {
-  // return name;
-  // }
 
   // public final String getUsage() {
   // List<Parameter> params = getParamDefinition().getParams();

@@ -22,6 +22,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.adrodoc55.common.collections.Closure;
 import de.adrodoc55.common.collections.CollectionUtils;
 import de.adrodoc55.minecraft.plugins.common.command.CommandContext;
+import de.adrodoc55.minecraft.plugins.common.command.CommandException;
 import de.adrodoc55.minecraft.plugins.common.command.Parameter;
 import de.adrodoc55.minecraft.plugins.common.command.ParameterList;
 import de.adrodoc55.minecraft.plugins.common.command.TabCompleteContext;
@@ -40,16 +41,15 @@ public class CreateGsCommand extends GsCommand {
   }
 
   @Override
-  protected boolean execute(CommandContext context) {
+  protected boolean execute(CommandContext context) throws CommandException {
     Player player;
     try {
       player = (Player) context.getSender();
     } catch (ClassCastException ex) {
-      String message = "Dieser Befehl kann nur von Spielern ausgeführt werden.";
-      MinecraftUtils.sendError(context.getSender(), message);
-      context.setUsage("");
-      return false;
+      throw new CommandException("Dieser Befehl kann nur von Spielern ausgeführt werden.", ex);
     }
+    MinecraftUtils.checkPermission(player, "terrania.gs.commands.gs." + getName());
+
     String regionName = context.get(REGION);
     String worldName = context.get(WORLD);
     World world;

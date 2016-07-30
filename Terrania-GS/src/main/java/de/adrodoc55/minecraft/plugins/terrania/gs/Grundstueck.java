@@ -82,9 +82,9 @@ public class Grundstueck {
       sign.setLine(x, "");
     }
     sign.update();
+    expire();
     expiration = null;
     price = Double.MAX_VALUE;
-    expire();
   }
 
   public void update() {

@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 public class MinecraftUtils {
 
@@ -40,9 +41,9 @@ public class MinecraftUtils {
   /**
    * Sendet eine Nachricht an den Spieler, falls in den letzten 9 Sekunden nicht die selbe Nachricht
    * bereits an diesen Spieler geschickt wurde.
-   * 
+   *
    * Diese Methode tut nichts, wenn eines der Argumente null ist.
-   * 
+   *
    * @param commandSender
    * @param message
    */
@@ -78,6 +79,22 @@ public class MinecraftUtils {
 
   public static void sendError(final CommandSender commandSender, String message) {
     sendMessage(commandSender, ChatColor.RED + message);
+  }
+
+  /**
+   * Throws an {@link InsufficientPermissionException} if {@code permissible} does not have the
+   * permission {@code permission}.
+   *
+   * @param permissible the {@link Permissible} to check
+   * @param permission the permission to check for
+   * @throws InsufficientPermissionException if {@code permissible} does not have the
+   *         {@code permission}
+   */
+  public static void checkPermission(Permissible permissible, String permission)
+      throws InsufficientPermissionException {
+    if (!permissible.hasPermission(permission)) {
+      throw new InsufficientPermissionException(permission);
+    }
   }
 
 }

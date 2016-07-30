@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import de.adrodoc55.common.collections.Closure;
 import de.adrodoc55.common.collections.CollectionUtils;
 import de.adrodoc55.minecraft.plugins.common.command.CommandContext;
+import de.adrodoc55.minecraft.plugins.common.command.CommandException;
 import de.adrodoc55.minecraft.plugins.common.command.Parameter;
 import de.adrodoc55.minecraft.plugins.common.command.ParameterList;
 import de.adrodoc55.minecraft.plugins.common.command.TabCompleteContext;
@@ -37,7 +38,7 @@ public abstract class ConcreteGsCommand extends GsCommand {
   }
 
   @Override
-  protected final boolean execute(CommandContext context) {
+  protected final boolean execute(CommandContext context) throws CommandException {
     String gsName = context.get(GS);
     String worldName = context.get(WORLD);
     World world;
@@ -71,7 +72,8 @@ public abstract class ConcreteGsCommand extends GsCommand {
     return execute(context, gs);
   }
 
-  protected abstract boolean execute(CommandContext context, Grundstueck grundstueck);
+  protected abstract boolean execute(CommandContext context, Grundstueck grundstueck)
+      throws CommandException;
 
   protected abstract void addAdditionalParams(ParameterList parameterList);
 

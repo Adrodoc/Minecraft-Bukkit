@@ -7,22 +7,12 @@ public abstract class AbstractCommandHandlerContext {
   private final CommandSender sender;
   private final Command command;
   private final String alias;
-  // protected final String[] args;
 
   public AbstractCommandHandlerContext(CommandSender sender, Command command, String alias) {
     this.sender = sender;
     this.command = command;
     this.alias = alias;
-    // this.args = args;
   }
-
-  // public String get(int index) {
-  // return args[0];
-  // }
-
-  // public int getArgsLength() {
-  // return args.length;
-  // }
 
   /**
    * Sets the example usage of the command. This is a conveniance method for

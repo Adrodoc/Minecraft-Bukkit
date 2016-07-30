@@ -11,6 +11,7 @@ import de.adrodoc55.common.CommonUtils;
 import de.adrodoc55.common.collections.Closure;
 import de.adrodoc55.common.collections.CollectionUtils;
 import de.adrodoc55.minecraft.plugins.common.utils.CommandUtils;
+import de.adrodoc55.minecraft.plugins.common.utils.InsufficientPermissionException;
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 
 public abstract class AbstractCommandHandler implements CommandHandler {
@@ -70,21 +71,32 @@ public abstract class AbstractCommandHandler implements CommandHandler {
     try {
       context = new CommandContext(sender, command, label, args, paramDef);
     } catch (ParameterException ex) {
-      MinecraftUtils.sendError(sender, ex.getMessage());
+      String message = ex.getLocalizedMessage();
+      MinecraftUtils.sendError(sender, message);
       return false;
     }
-    return execute(context);
+    try {
+      return execute(context);
+    } catch (InsufficientPermissionException ex) {
+      String message = "Du hast keine ausreichenden Berechtigungen für diesen Befehl.";
+      MinecraftUtils.sendError(sender, message);
+      command.setUsage("");
+      return false;
+    } catch (CommandException ex) {
+      String message = ex.getLocalizedMessage();
+      MinecraftUtils.sendError(sender, message);
+      command.setUsage("");
+      return false;
+    }
   }
 
   protected abstract ParameterList getParamDefinition();
 
-  protected abstract boolean execute(CommandContext context);
+  protected abstract boolean execute(CommandContext context) throws CommandException;
 
   @Override
   public final List<String> onTabComplete(CommandSender sender, Command command, String alias,
       String[] args) {
-    // ParameterList paramDefinition = getParamDefinition();
-
     String toComplete = args[args.length - 1];
     args[args.length - 1] = null;
     if (args.length < path.length - 1) {
@@ -96,11 +108,8 @@ public abstract class AbstractCommandHandler implements CommandHandler {
     args = CollectionUtils.removeNullValues(args);
 
     ParameterList paramDef = getParamDefinition();
-
     TabCompleteContext context = new TabCompleteContext(sender, command, alias, args, paramDef);
-
     List<String> elements = tabComplete(context);
-
     List<String> matchingElements = CommandUtils.elementsStartsWith(elements, toComplete);
     return matchingElements;
   }

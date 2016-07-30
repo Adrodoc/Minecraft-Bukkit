@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import de.adrodoc55.common.CommonUtils;
 import de.adrodoc55.common.collections.Closure;
 import de.adrodoc55.common.collections.CollectionUtils;
 import de.adrodoc55.minecraft.plugins.common.command.CommandContext;
+import de.adrodoc55.minecraft.plugins.common.utils.InsufficientPermissionException;
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
 import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
@@ -21,7 +23,10 @@ public class ListGsCommand extends ParamlessGsCommand {
   }
 
   @Override
-  protected boolean execute(CommandContext context) {
+  protected boolean execute(CommandContext context) throws InsufficientPermissionException {
+    CommandSender sender = context.getSender();
+    MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+
     StringBuilder sb = new StringBuilder();
     sb.append("Grundstücke:\n");
     Collection<GsManager> gsManagers = GsManager.getActiveInstances();
@@ -46,7 +51,7 @@ public class ListGsCommand extends ParamlessGsCommand {
       sb.append(ChatColor.GOLD + "  keine Grundstücke vorhanden.\n");
     }
     String message = sb.toString();
-    MinecraftUtils.sendInfo(context.getSender(), message);
+    MinecraftUtils.sendInfo(sender, message);
     return true;
   }
 }

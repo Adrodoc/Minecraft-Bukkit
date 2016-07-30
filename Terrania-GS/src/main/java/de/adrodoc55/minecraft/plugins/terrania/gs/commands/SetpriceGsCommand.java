@@ -3,10 +3,13 @@ package de.adrodoc55.minecraft.plugins.terrania.gs.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.command.CommandSender;
+
 import de.adrodoc55.minecraft.plugins.common.command.CommandContext;
 import de.adrodoc55.minecraft.plugins.common.command.Parameter;
 import de.adrodoc55.minecraft.plugins.common.command.ParameterList;
 import de.adrodoc55.minecraft.plugins.common.command.TabCompleteContext;
+import de.adrodoc55.minecraft.plugins.common.utils.InsufficientPermissionException;
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
 
@@ -19,7 +22,10 @@ public class SetpriceGsCommand extends ConcreteGsCommand {
   }
 
   @Override
-  protected boolean execute(CommandContext context, Grundstueck gs) {
+  protected boolean execute(CommandContext context, Grundstueck gs)
+      throws InsufficientPermissionException {
+    CommandSender sender = context.getSender();
+    MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
     String price = context.get(PRICE);
     try {
       gs.setPrice(Double.parseDouble(price));
