@@ -208,7 +208,7 @@ public class Grundstueck {
    */
   public boolean canBeRented() throws ValidationException {
     validate();
-    return !LocalDate.now().minusDays(3).isBefore(expiration);
+    return owner == null || !LocalDate.now().minusDays(3).isBefore(expiration);
   }
 
   public void update() {
