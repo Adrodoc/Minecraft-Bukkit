@@ -1,7 +1,5 @@
 package de.adrodoc55.minecraft.plugins.terrania.gs;
 
-// import java.time.LocalDate;
-// import java.time.temporal.ChronoUnit;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -10,7 +8,6 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -21,6 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import de.adrodoc55.common.CommonUtils;
@@ -57,11 +56,7 @@ public class Grundstueck {
       this.owner = UUID.fromString(owner);
     }
     price = gs.getPrice();
-    // Java 8:
     expiration = LocalDate.ofEpochDay(gs.getExpiration());
-    // Java 7:
-    // expiration = LocalDate.fromDateFields(new Date(0)).plusDays(
-    // (int) gs.getExpiration());
     XmlSign xmlSign = gs.getSign();
     int signX = xmlSign.getX();
     int signY = xmlSign.getY();
@@ -69,76 +64,6 @@ public class Grundstueck {
     Block block = world.getBlockAt(signX, signY, signZ);
     sign = block;
     updateSignContent();
-  }
-
-  /**
-   * Invalidates this gs. This also clears the sign content.
-   *
-   * @since 0.8
-   */
-  public void invalidate() {
-    Sign sign = getSign();
-    for (int x = 0; x < 4; x++) {
-      sign.setLine(x, "");
-    }
-    sign.update();
-    expire();
-    expiration = null;
-    price = Double.MAX_VALUE;
-  }
-
-  public void update() {
-    updateSignContent();
-    if (!isRented()) {
-      expire();
-    }
-  }
-
-  /**
-   * Call this method when a gs expires. This clears the {@link #owner}, members and
-   * {@link #expiration}.
-   */
-  public void expire() {
-    setOwner(null);
-    getRegion().getMembers().clear();
-  }
-
-  /**
-   * Validates this gs, throwing a {@link ValidationException} if this gs is invalid.<br>
-   * A gs is considered invalid when:
-   * <ul>
-   * <li>It's world is null
-   * <li>It's name is null
-   * <li>It's sign is null
-   * <li>It's expiration is null
-   * <li>It's region is null
-   * <li>It's sign does not exist in it's world
-   * </ul>
-   *
-   * @throws ValidationException
-   */
-  public void validate() throws ValidationException {
-    if (world == null) {
-      throw new ValidationException("Invalides Grundstück: world ist null");
-    }
-    if (name == null) {
-      throw new ValidationException("Invalides Grundstück: name ist null");
-    }
-    if (sign == null) {
-      throw new ValidationException("Invalides Grundstück: sign ist null");
-    }
-    if (expiration == null) {
-      throw new ValidationException("Invalides Grundstück: expiration ist null");
-    }
-    if (getInvalidRegion() == null) {
-      throw new ValidationException("Invalides Grundstück: region existiert nicht");
-    }
-    if (!world.equals(sign.getWorld())) {
-      throw new ValidationException("Invalides Grundstück: sign existiert nicht in dieser Welt");
-    }
-    if (getInvalidSign() == null) {
-      throw new ValidationException("Invalides Grundstück: sign existiert nicht");
-    }
   }
 
   /**
@@ -262,19 +187,109 @@ public class Grundstueck {
     return expiration;
   }
 
-  // public void setExpiration(LocalDate expiration) {
-  // this.expiration = expiration;
-  // }
-
   /**
-   * Returns whether this gs is rented.
+   * Returns whether this gs is actively rented. If a gs expires it is no longer actively rented,
+   * but can not yet be rented again (See {@link #canBeRented()}).
    *
    * @throws ValidationException if this gs is invalid
    * @see Grundstueck#validate()
    */
-  public boolean isRented() throws ValidationException {
+  public boolean isActivelyRented() throws ValidationException {
     validate();
-    return expiration.isAfter(LocalDate.now());
+    return LocalDate.now().isBefore(expiration);
+  }
+
+  /**
+   * Returns whether this gs can be rented. If the gs expires the owner has three days left to
+   * extend the rent.
+   *
+   * @throws ValidationException if this gs is invalid
+   * @see Grundstueck#validate()
+   */
+  public boolean canBeRented() throws ValidationException {
+    validate();
+    return !LocalDate.now().minusDays(3).isBefore(expiration);
+  }
+
+  public void update() {
+    updateSignContent();
+    if (canBeRented()) {
+      removeOwnerAndMember();
+    } else if (isActivelyRented()) {
+      ProtectedRegion region = getRegion();
+      region.setFlag(DefaultFlag.BUILD, State.ALLOW);
+      region.setFlag(DefaultFlag.BLOCK_BREAK, State.ALLOW);
+      region.setFlag(DefaultFlag.BLOCK_PLACE, State.ALLOW);
+    } else { // Ausgelaufen
+      ProtectedRegion region = getRegion();
+      region.setFlag(DefaultFlag.BUILD, State.DENY);
+      region.setFlag(DefaultFlag.BLOCK_BREAK, State.DENY);
+      region.setFlag(DefaultFlag.BLOCK_PLACE, State.DENY);
+    }
+  }
+
+  /**
+   * Remove all owner and member.
+   */
+  private void removeOwnerAndMember() {
+    owner = null;
+    ProtectedRegion region = getRegion();
+    region.getOwners().clear();
+    region.getMembers().clear();
+  }
+
+  /**
+   * Invalidates this gs. This also clears the sign content.
+   *
+   * @since 0.8
+   */
+  public void invalidate() {
+    Sign sign = getSign();
+    for (int x = 0; x < 4; x++) {
+      sign.setLine(x, "");
+    }
+    sign.update();
+    removeOwnerAndMember();
+    expiration = null;
+    price = Double.MAX_VALUE;
+  }
+
+  /**
+   * Validates this gs, throwing a {@link ValidationException} if this gs is invalid.<br>
+   * A gs is considered invalid when:
+   * <ul>
+   * <li>It's world is null
+   * <li>It's name is null
+   * <li>It's sign is null
+   * <li>It's expiration is null
+   * <li>It's region is null
+   * <li>It's sign does not exist in it's world
+   * </ul>
+   *
+   * @throws ValidationException
+   */
+  public void validate() throws ValidationException {
+    if (world == null) {
+      throw new ValidationException("Invalides Grundstück: world ist null");
+    }
+    if (name == null) {
+      throw new ValidationException("Invalides Grundstück: name ist null");
+    }
+    if (sign == null) {
+      throw new ValidationException("Invalides Grundstück: sign ist null");
+    }
+    if (expiration == null) {
+      throw new ValidationException("Invalides Grundstück: expiration ist null");
+    }
+    if (getInvalidRegion() == null) {
+      throw new ValidationException("Invalides Grundstück: region existiert nicht");
+    }
+    if (!world.equals(sign.getWorld())) {
+      throw new ValidationException("Invalides Grundstück: sign existiert nicht in dieser Welt");
+    }
+    if (getInvalidSign() == null) {
+      throw new ValidationException("Invalides Grundstück: sign existiert nicht");
+    }
   }
 
   public void updateSignContent() throws ValidationException {
@@ -288,31 +303,32 @@ public class Grundstueck {
 
   private String[] getSignContent() throws ValidationException {
     String[] content = new String[4];
-    content[1] = name;
-    if (isRented()) {
+    if (isActivelyRented()) {
       content[0] = "[Vermietet]";
+      content[1] = name;
       content[2] = getOwner().getName();
       content[3] = "Noch " + getDaysLeft() + " Tage";
-    } else {
+    } else if (canBeRented()) {
       content[0] = "[Zu vermieten]";
+      content[1] = name;
       content[2] = "Preis: " + CommonUtils.doubleToString(price);
       content[3] = "";
+    } else {
+      content[0] = "[Abgelaufen]";
+      content[1] = name;
+      content[2] = getOwner().getName();
+      content[3] = "Noch " + (getDaysLeft() + 3) + " Tage";
     }
     return content;
   }
 
   public long getDaysLeft() throws ValidationException {
     validate();
-    // Java 8:
-    long timeLeft = ChronoUnit.DAYS.between(LocalDate.now(), expiration);
-    // Java 7:
-    // long timeLeft = Days.daysBetween(LocalDate.now(),
-    // expiration).getDays();
-    return timeLeft;
+    return ChronoUnit.DAYS.between(LocalDate.now(), expiration);
   }
 
-  public void mieten(OfflinePlayer player) throws ValidationException {
-    if (isRented()) {
+  public void rent(OfflinePlayer player) throws ValidationException {
+    if (!canBeRented()) {
       throw new IllegalStateException("Dieses Grundstück ist bereits vermietet.");
     }
     boolean paid = Wirtschaftsmanager.removeMoney(player.getUniqueId(), price);
@@ -320,44 +336,40 @@ public class Grundstueck {
     if (paid) {
       setOwner(player);
       expiration = LocalDate.now().plusDays(1);
-      updateSignContent();
-      String message =
-          ChatColor.YELLOW + "Du hast dieses Grundstück erfolgreich für einen Tag gemietet.";
-      MinecraftUtils.sendMessage(onlinePlayer, message);
+      update();
+      String message = "Du hast dieses Grundstück erfolgreich für einen Tag gemietet.";
+      MinecraftUtils.sendInfo(onlinePlayer, message);
     } else {
-      String message = ChatColor.RED + "Du hast nicht genug Geld um dieses Grundstück zu mieten.";
-      MinecraftUtils.sendMessage(onlinePlayer, message);
+      String message = "Du hast nicht genug Geld um dieses Grundstück zu mieten.";
+      MinecraftUtils.sendError(onlinePlayer, message);
     }
   }
 
-  public void mieteVerlaengern(long anzahlTage) throws ValidationException {
-    if (!isRented()) {
+  public void extendRent(long anzahlTage) throws ValidationException {
+    if (canBeRented()) {
       throw new IllegalArgumentException(
           "Ein abgelaufenes Grundstück kann nicht verlängert werden.");
     }
     long daysLeft = getDaysLeft();
     if (daysLeft + anzahlTage > MAX_RENT_DAYS) {
       Player player = getOwner().getPlayer();
-      String message = ChatColor.RED + String
-          .format("Ein Grundstück kann für maximal %s Tage gemietet werden.", MAX_RENT_DAYS);
-      MinecraftUtils.sendMessage(player, message);
+      String message =
+          String.format("Ein Grundstück kann für maximal %s Tage gemietet werden.", MAX_RENT_DAYS);
+      MinecraftUtils.sendError(player, message);
       return;
     }
     boolean paid = Wirtschaftsmanager.removeMoney(getOwner().getUniqueId(), price);
     Player onlinePlayer = getOwner().getPlayer();
-    if (paid) {
-      // Java 8:
-      expiration = expiration.plusDays(anzahlTage);
-      // Java 7:
-      // expiration = expiration.plusDays((int) anzahlTage);
-
-      updateSignContent();
-      String message = ChatColor.YELLOW
-          + String.format("Deine Miete wurde verlängert. Dir bleiben noch %d Tage", getDaysLeft());
-      MinecraftUtils.sendMessage(onlinePlayer, message);
+    if (!paid) {
+      String message = "Du hast nicht genug Geld um die Miete zu verlängern.";
+      MinecraftUtils.sendError(onlinePlayer, message);
     } else {
-      String message = ChatColor.RED + "Du hast nicht genug Geld um die Miete zu verlängern.";
-      MinecraftUtils.sendMessage(onlinePlayer, message);
+      expiration = expiration.plusDays(anzahlTage);
+
+      update();
+      String message =
+          String.format("Deine Miete wurde verlängert. Dir bleiben noch %d Tage", getDaysLeft());
+      MinecraftUtils.sendInfo(onlinePlayer, message);
     }
   }
 

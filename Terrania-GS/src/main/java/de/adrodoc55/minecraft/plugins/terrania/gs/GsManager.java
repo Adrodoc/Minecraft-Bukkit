@@ -37,9 +37,6 @@ import de.adrodoc55.common.collections.CollectionUtils;
 import de.adrodoc55.minecraft.plugins.common.PluginException;
 import de.adrodoc55.minecraft.plugins.terrania.gs.xml.XmlGs;
 import de.adrodoc55.minecraft.plugins.terrania.gs.xml.XmlGsRoot;
-// import java.time.LocalDate;
-// import java.time.LocalDateTime;
-// import java.time.ZoneId;
 
 public class GsManager {
 
@@ -163,7 +160,6 @@ public class GsManager {
       }
       setup = true;
     }
-    // Java 8:
     ScheduledExecutorService scheduler = getScheduler();
     Runnable command = () -> {
       logger().info("Update alle Grundstücke");
@@ -176,23 +172,6 @@ public class GsManager {
     long initialDelay = LocalDateTime.now().until(atStartOfTomorrow, ChronoUnit.MINUTES);
     long period = TimeUnit.DAYS.toMinutes(1);
     scheduler.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.MINUTES);
-
-    // Java 7:
-    // Timer timer = new Timer(true);
-    // LocalDateTime atStartOfTomorrow =
-    // LocalDate.now().plusDays(1).toLocalDateTime(new LocalTime(0, 0));
-    // Date firstTime = atStartOfTomorrow.toDate(TimeZone.getDefault());
-    // int period = 1000 * 60 * 60 * 24;
-    // timer.schedule(new TimerTask() {
-    // @Override
-    // public void run() {
-    // // Jeden Tag um 00:00 werden alle abgelaufenen Grundstücke
-    // // freigegeben.
-    // logger().info("Update alle Grundstücke");
-    // updateAlleGrundstuecke();
-    // logger().info("Update alle Grundstücke FINISHED");
-    // }
-    // }, firstTime, period);
   }
 
   private final World world;
@@ -304,7 +283,7 @@ public class GsManager {
     boolean success = gsm.grundstuecke.add(grundstueck);
     if (success) {
       setDefaults(grundstueck.getRegion());
-      grundstueck.updateSignContent();
+      grundstueck.update();
     }
     return success;
   }

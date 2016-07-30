@@ -47,14 +47,12 @@ public class GsListener implements Listener {
       return;
     }
     Player clicker = e.getPlayer();
-    if (!grundstueck.isRented()) {
-      grundstueck.mieten(clicker);
+    if (grundstueck.canBeRented()) {
+      grundstueck.rent(clicker);
+    } else if (clicker.equals(grundstueck.getOwner())) {
+      grundstueck.extendRent(1);
     } else {
-      if (!grundstueck.getOwner().equals(clicker)) {
-        MinecraftUtils.sendMessage(clicker, "Dieses Grundstück ist bereits vermietet");
-        return;
-      }
-      grundstueck.mieteVerlaengern(1);
+      MinecraftUtils.sendInfo(clicker, "Dieses Grundstück ist bereits vermietet");
     }
   }
 }

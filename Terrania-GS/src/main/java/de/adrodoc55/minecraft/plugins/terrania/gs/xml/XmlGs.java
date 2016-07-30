@@ -24,11 +24,7 @@ public class XmlGs {
     } else {
       owner = offlinePlayer.getUniqueId().toString();
     }
-    // Java 8:
     expiration = gs.getExpiration().toEpochDay();
-    // Java 7:
-    // expiration = Days.daysBetween(LocalDate.fromDateFields(new Date(0)),
-    // gs.getExpiration()).getDays();
     price = gs.getPrice();
     sign = new XmlSign(gs.getSign());
   }
