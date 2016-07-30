@@ -14,17 +14,6 @@ public abstract class AbstractCommandHandlerContext {
     this.alias = alias;
   }
 
-  /**
-   * Sets the example usage of the command. This is a conveniance method for
-   * getCommand.setUsage(usage);
-   *
-   * @param usage new example usage
-   * @return the command object, for chaining
-   */
-  public Command setUsage(String usage) {
-    return command.setUsage(usage);
-  }
-
   public CommandSender getSender() {
     return sender;
   }

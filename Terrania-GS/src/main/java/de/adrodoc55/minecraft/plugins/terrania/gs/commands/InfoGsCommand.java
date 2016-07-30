@@ -30,7 +30,7 @@ public class InfoGsCommand extends ConcreteGsCommand {
       throws InsufficientPermissionException {
     CommandSender sender = context.getSender();
     if (!sender.equals(gs.getOwner())) {
-      MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+      MinecraftUtils.checkPermission(sender, getPermissionKey());
     }
 
     StringBuilder sb = new StringBuilder();

@@ -23,15 +23,16 @@ public class DeleteGsCommand extends ConcreteGsCommand {
   protected boolean execute(CommandContext context, Grundstueck grundstueck)
       throws InsufficientPermissionException {
     CommandSender sender = context.getSender();
-    MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+    MinecraftUtils.checkPermission(sender, getPermissionKey());
 
+    String gsName = grundstueck.getName();
     if (GsManager.remove(grundstueck)) {
       String message =
-          String.format("Das Grundstück %s wurde erfolgreich entfernt.", grundstueck.getName());
+          String.format("Das Grundstück %s wurde erfolgreich entfernt.", gsName);
       MinecraftUtils.sendInfo(sender, message);
     } else {
       String message =
-          String.format("Das Grundstück %s wurde nicht gefunden.", grundstueck.getName());
+          String.format("Das Grundstück %s wurde nicht gefunden.", gsName);
       MinecraftUtils.sendError(sender, message);
     }
     return true;

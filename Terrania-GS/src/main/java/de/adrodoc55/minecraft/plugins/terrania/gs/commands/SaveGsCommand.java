@@ -16,7 +16,7 @@ public class SaveGsCommand extends ParamlessGsCommand {
   @Override
   protected boolean execute(CommandContext context) throws InsufficientPermissionException {
     CommandSender sender = context.getSender();
-    MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+    MinecraftUtils.checkPermission(sender, getPermissionKey());
 
     GsManager.saveAll();
     String message = "Alle Grundstücke wurden gespeichert.";

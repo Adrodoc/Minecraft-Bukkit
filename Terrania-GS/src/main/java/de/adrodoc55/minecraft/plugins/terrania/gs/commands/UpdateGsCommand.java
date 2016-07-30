@@ -16,7 +16,7 @@ public class UpdateGsCommand extends ParamlessGsCommand {
   @Override
   protected boolean execute(CommandContext context) throws InsufficientPermissionException {
     CommandSender sender = context.getSender();
-    MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+    MinecraftUtils.checkPermission(sender, getPermissionKey());
 
     for (GsManager gsm : GsManager.getActiveInstances()) {
       gsm.updateAlleGrundstuecke();

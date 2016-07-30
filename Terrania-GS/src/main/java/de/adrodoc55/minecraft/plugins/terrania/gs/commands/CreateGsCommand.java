@@ -1,7 +1,5 @@
 package de.adrodoc55.minecraft.plugins.terrania.gs.commands;
 
-import static de.adrodoc55.minecraft.plugins.terrania.gs.TerraniaGsPlugin.logger;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +46,7 @@ public class CreateGsCommand extends GsCommand {
     } catch (ClassCastException ex) {
       throw new CommandException("Dieser Befehl kann nur von Spielern ausgeführt werden.", ex);
     }
-    MinecraftUtils.checkPermission(player, "terrania.gs.commands.gs." + getName());
+    MinecraftUtils.checkPermission(player, getPermissionKey());
 
     String regionName = context.get(REGION);
     String worldName = context.get(WORLD);
@@ -67,29 +65,6 @@ public class CreateGsCommand extends GsCommand {
       MinecraftUtils.sendError(context.getSender(), message);
       return false;
     }
-    // Selection selection = JavaPlugin.getPlugin(WorldEditPlugin.class)
-    // .getSelection(player);
-    // if (selection == null) {
-    // String message =
-    // "Du musst eine World Edit Selection haben um diesen Befehl aus zu führen.";
-    // MinecraftUtils.sendError(player, message);
-    // context.setUsage("");
-    // return false;
-    // }
-    // String missingSignMessage =
-    // "Du musst genau ein Schild ausgewählt habem um diesen Befehl auszuführen.";
-    // if (selection.getArea() != 1) {
-    // MinecraftUtils.sendError(player, missingSignMessage);
-    // return false;
-    // }
-    // World signWorld = selection.getWorld();
-    // Location signLocation = selection.getMaximumPoint();
-    // Block signBlock = signWorld.getBlockAt(signLocation);
-    // BlockState state = signBlock.getState();
-    // if (!(state instanceof Sign)) {
-    // MinecraftUtils.sendError(player, missingSignMessage);
-    // return false;
-    // }
     Block signBlock = player.getTargetBlock((Set<Material>) null, 10);
     World signWorld = signBlock.getWorld();
     BlockState state = signBlock.getState();
@@ -100,9 +75,7 @@ public class CreateGsCommand extends GsCommand {
     Sign sign = (Sign) state;
     if (!world.equals(signWorld)) {
       String message = "Die Region und das Schild müssen sich in der selben Welt befinden.";
-      MinecraftUtils.sendError(player, message);
-      context.setUsage("");
-      return false;
+      throw new CommandException(message);
     }
     Grundstueck grundstueck = new Grundstueck(world, regionName, sign);
     try {
@@ -110,17 +83,11 @@ public class CreateGsCommand extends GsCommand {
       if (!didNotYetExist) {
         String message = String.format("Das Grundstück %s existiert bereits in der Welt %s.",
             grundstueck.getName(), world.getName());
-        MinecraftUtils.sendError(player, message);
-        context.setUsage("");
-        return false;
+        throw new CommandException(message);
       }
     } catch (ValidationException ex) {
-      String message = ex.getMessage();
-      logger().error(message);
-      ex.printStackTrace();
-      MinecraftUtils.sendError(context.getSender(), message);
-      context.setUsage("");
-      return false;
+      String message = ex.getLocalizedMessage();
+      throw new CommandException(message, ex);
     }
     String message = String.format("Das Grundstück %s wurde erfolgreich in der Welt %s erstellt.",
         grundstueck.getName(), world.getName());

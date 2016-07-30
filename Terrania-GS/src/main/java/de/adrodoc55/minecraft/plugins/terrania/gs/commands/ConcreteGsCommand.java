@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.adrodoc55.common.collections.Closure;
@@ -39,6 +40,7 @@ public abstract class ConcreteGsCommand extends GsCommand {
 
   @Override
   protected final boolean execute(CommandContext context) throws CommandException {
+    CommandSender sender = context.getSender();
     String gsName = context.get(GS);
     String worldName = context.get(WORLD);
     World world;
@@ -46,17 +48,17 @@ public abstract class ConcreteGsCommand extends GsCommand {
       world = Bukkit.getWorld(worldName);
       if (world == null) {
         String message = String.format("Die Welt %s konnte nicht gefunden werden.", worldName);
-        MinecraftUtils.sendError(context.getSender(), message);
+        MinecraftUtils.sendError(sender, message);
         return false;
       }
     } else {
-      if (context.getSender() instanceof Player) {
-        Player player = (Player) context.getSender();
+      if (sender instanceof Player) {
+        Player player = (Player) sender;
         world = player.getWorld();
       } else {
         String message =
             "Du musst eine Welt angeben um diesen Befehl aus der Konsole benutzen zu können.";
-        MinecraftUtils.sendError(context.getSender(), message);
+        MinecraftUtils.sendError(sender, message);
         return false;
       }
     }
@@ -65,9 +67,7 @@ public abstract class ConcreteGsCommand extends GsCommand {
       String message =
           String.format("Das Grundstück %s konnte nicht in der Welt %s gefunden werden.", gsName,
               world.getName());
-      MinecraftUtils.sendError(context.getSender(), message);
-      context.setUsage("");
-      return false;
+      throw new CommandException(message);
     }
     return execute(context, gs);
   }

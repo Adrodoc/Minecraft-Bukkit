@@ -25,7 +25,8 @@ public class SetpriceGsCommand extends ConcreteGsCommand {
   protected boolean execute(CommandContext context, Grundstueck gs)
       throws InsufficientPermissionException {
     CommandSender sender = context.getSender();
-    MinecraftUtils.checkPermission(sender, "terrania.gs.commands.gs." + getName());
+    MinecraftUtils.checkPermission(sender, getPermissionKey());
+
     String price = context.get(PRICE);
     try {
       gs.setPrice(Double.parseDouble(price));

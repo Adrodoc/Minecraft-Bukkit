@@ -21,12 +21,12 @@ import de.adrodoc55.minecraft.plugins.common.utils.InsufficientPermissionExcepti
 import de.adrodoc55.minecraft.plugins.common.utils.MinecraftUtils;
 import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
 
-public class AddMemberGsCommand extends ConcreteGsCommand {
+public class RemoveMemberGsCommand extends ConcreteGsCommand {
 
   private static final String MEMBER = "member";
 
-  public AddMemberGsCommand() {
-    super("addmember");
+  public RemoveMemberGsCommand() {
+    super("removemember");
   }
 
   @Override
@@ -44,10 +44,10 @@ public class AddMemberGsCommand extends ConcreteGsCommand {
 
     DefaultDomain members = gs.getRegion().getMembers();
     String memberName = context.get(MEMBER);
-    members.addPlayer(memberName);
-    String message = String.format(
-        "Der Spieler %s wurde erfolgreich dem Grundstück %s in der Welt %s hinzugefügt.",
-        memberName, gs.getName(), gs.getWorld().getName());
+    members.removePlayer(memberName);
+    String message =
+        String.format("Der Spieler %s wurde erfolgreich vom Grundstück %s in der Welt %s entfernt.",
+            memberName, gs.getName(), gs.getWorld().getName());
     MinecraftUtils.sendInfo(sender, message);
     return true;
   }
