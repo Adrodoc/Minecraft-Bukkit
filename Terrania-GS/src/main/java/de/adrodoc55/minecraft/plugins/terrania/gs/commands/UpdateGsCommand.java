@@ -6,18 +6,18 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
 
 public class UpdateGsCommand extends ParamlessGsCommand {
 
-    protected UpdateGsCommand() {
-        super("update");
-    }
+  protected UpdateGsCommand() {
+    super("update");
+  }
 
-    @Override
-    protected boolean execute(CommandContext context) {
-        for (GsManager gsm : GsManager.getActiveInstances()) {
-            gsm.updateAlleGrundstuecke();
-        }
-        String message = "Alle Grundstücke wurden geupdated.";
-        MinecraftUtils.sendInfo(context.getSender(), message);
-        return true;
+  @Override
+  protected boolean execute(CommandContext context) {
+    for (GsManager gsm : GsManager.getActiveInstances()) {
+      gsm.updateAlleGrundstuecke();
     }
+    String message = "Alle Grundstücke wurden geupdated.";
+    MinecraftUtils.sendInfo(context.getSender(), message);
+    return true;
+  }
 
 }

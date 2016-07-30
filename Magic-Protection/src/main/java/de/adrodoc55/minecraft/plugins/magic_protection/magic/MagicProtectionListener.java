@@ -42,10 +42,8 @@ public class MagicProtectionListener implements Listener {
     Block block = e.getClickedBlock();
     OfflinePlayer protector = ProtectionManager.getBlockProtector(block);
     if (protector != null) {
-      Location particleLocation = MinecraftUtils
-          .getCenteredBlockLocation(block, e.getBlockFace());
-      ParticleEffect.SPELL_WITCH.display(0.1f, 0, 0.1f, 0, 100,
-          particleLocation, e.getPlayer());
+      Location particleLocation = MinecraftUtils.getCenteredBlockLocation(block, e.getBlockFace());
+      ParticleEffect.SPELL_WITCH.display(0.1f, 0, 0.1f, 0, 100, particleLocation, e.getPlayer());
     }
 
   }
@@ -56,24 +54,19 @@ public class MagicProtectionListener implements Listener {
     }
     Player clicker = e.getPlayer();
     ItemStack itemInHand = clicker.getItemOnCursor();
-    boolean holdingWand = itemInHand.isSimilar(MagicCraftingManager
-        .getNewNecroticWand())
+    boolean holdingWand = itemInHand.isSimilar(MagicCraftingManager.getNewNecroticWand())
         || itemInHand.isSimilar(MagicCraftingManager.getNewMagicWand())
-        || itemInHand
-            .isSimilar(MagicCraftingManager.getNewMasterWand());
+        || itemInHand.isSimilar(MagicCraftingManager.getNewMasterWand());
     if (!holdingWand) {
       return;
     }
     Block block = e.getClickedBlock();
     OfflinePlayer protector = ProtectionManager.getBlockProtector(block);
-    Location particleLocation = MinecraftUtils.getCenteredBlockLocation(
-        block, e.getBlockFace());
+    Location particleLocation = MinecraftUtils.getCenteredBlockLocation(block, e.getBlockFace());
     if (clicker.equals(protector)) {
       ProtectionManager.removeBlockProtection(block);
-      ParticleEffect.CRIT_MAGIC.display(0.1f, 0, 0.1f, 0, 100,
-          particleLocation, clicker);
-      String message = ChatColor.AQUA
-          + "Dieser Block wird nun nicht mehr von dir geschützt";
+      ParticleEffect.CRIT_MAGIC.display(0.1f, 0, 0.1f, 0, 100, particleLocation, clicker);
+      String message = ChatColor.AQUA + "Dieser Block wird nun nicht mehr von dir geschützt";
       MinecraftUtils.sendMessage(clicker, message);
       return;
     }
@@ -94,44 +87,35 @@ public class MagicProtectionListener implements Listener {
       protectionCost = NECROTIC_COST;
     } else if (itemInHand.isSimilar(MagicCraftingManager.getNewMagicWand())) {
       protectionCost = MAGIC_COST;
-    } else if (itemInHand
-        .isSimilar(MagicCraftingManager.getNewMasterWand())) {
+    } else if (itemInHand.isSimilar(MagicCraftingManager.getNewMasterWand())) {
       protectionCost = MASTER_COST;
     } else {
       return;
     }
-    double experience = (double) clicker.getLevel()
-        + (double) clicker.getExp();
-    if (experience < protectionCost
-        && clicker.getGameMode() != GameMode.CREATIVE) {
+    double experience = (double) clicker.getLevel() + (double) clicker.getExp();
+    if (experience < protectionCost && clicker.getGameMode() != GameMode.CREATIVE) {
       String format = "Du benötigst mindestens %s Level um einen Block zu beschützen";
       String message = String.format(format, protectionCost);
-      MinecraftUtils
-          .sendMessage(clicker, ChatColor.DARK_PURPLE + message);
+      MinecraftUtils.sendMessage(clicker, ChatColor.DARK_PURPLE + message);
       return;
     }
     Block block = e.getClickedBlock();
-    Location particleLocation = MinecraftUtils.getCenteredBlockLocation(
-        block, e.getBlockFace());
+    Location particleLocation = MinecraftUtils.getCenteredBlockLocation(block, e.getBlockFace());
     OfflinePlayer protector = ProtectionManager.getBlockProtector(block);
     if (protector != null) {
-      ParticleEffect.VILLAGER_ANGRY.display(0, 0, 0, 0, 1,
-          particleLocation, clicker);
+      ParticleEffect.VILLAGER_ANGRY.display(0, 0, 0, 0, 1, particleLocation, clicker);
       String message = "Dieser Block ist bereits geschützt";
       MinecraftUtils.sendError(clicker, message);
       return;
     }
     if (ProtectionManager.setBlockProtector(block, clicker)) {
-      ParticleEffect.SPELL_WITCH.display(0.1f, 0, 0.1f, 0, 100,
-          particleLocation, clicker);
+      ParticleEffect.SPELL_WITCH.display(0.1f, 0, 0.1f, 0, 100, particleLocation, clicker);
       MinecraftUtils.setXp(clicker, experience - protectionCost);
-      String message = ChatColor.DARK_PURPLE
-          + "Dieser Block wird nun von dir geschützt";
+      String message = ChatColor.DARK_PURPLE + "Dieser Block wird nun von dir geschützt";
       MinecraftUtils.sendMessage(clicker, message);
       return;
     } else {
-      ParticleEffect.VILLAGER_ANGRY.display(0, 0, 0, 0, 1,
-          particleLocation, clicker);
+      ParticleEffect.VILLAGER_ANGRY.display(0, 0, 0, 0, 1, particleLocation, clicker);
       String message = "Dieser Block kann nicht geschützt werden";
       MinecraftUtils.sendError(clicker, message);
       return;

@@ -12,42 +12,41 @@ import de.adrodoc55.minecraft.plugins.magic_protection.protection.WorldProtectio
 
 public class MagicProtectionPlugin extends JavaPlugin {
 
-	private static Logger LOGGER;
+  private static Logger LOGGER;
 
-	public static Logger logger() {
-		return LOGGER;
-	}
+  public static Logger logger() {
+    return LOGGER;
+  }
 
-	private static MagicProtectionPlugin INSTANCE;
+  private static MagicProtectionPlugin INSTANCE;
 
-	public static MagicProtectionPlugin instance() {
-		return INSTANCE;
-	}
+  public static MagicProtectionPlugin instance() {
+    return INSTANCE;
+  }
 
-	public MagicProtectionPlugin() {
-		LOGGER = Logger.getLogger(this);
-		INSTANCE = this;
-	}
+  public MagicProtectionPlugin() {
+    LOGGER = Logger.getLogger(this);
+    INSTANCE = this;
+  }
 
-	@Override
-	public void onEnable() {
-		PluginManager pluginManager = getServer().getPluginManager();
-		getCommand(RangCommandExecutor.COMMAND).setExecutor(
-				new RangCommandExecutor());
-		pluginManager.registerEvents(new ProtectionListener(), this);
-		pluginManager.registerEvents(new WorldProtectionListener(), this);
-		pluginManager.registerEvents(new MagicProtectionListener(), this);
-		MagicCraftingManager.addServerRecipes(getServer());
+  @Override
+  public void onEnable() {
+    PluginManager pluginManager = getServer().getPluginManager();
+    getCommand(RangCommandExecutor.COMMAND).setExecutor(new RangCommandExecutor());
+    pluginManager.registerEvents(new ProtectionListener(), this);
+    pluginManager.registerEvents(new WorldProtectionListener(), this);
+    pluginManager.registerEvents(new MagicProtectionListener(), this);
+    MagicCraftingManager.addServerRecipes(getServer());
 
-		// // Instantiate the ProtectionManagers
-		// for (World world : getServer().getWorlds()) {
-		// ProtectionManager.getProtectionManager(world);
-		// }
-	}
+    // // Instantiate the ProtectionManagers
+    // for (World world : getServer().getWorlds()) {
+    // ProtectionManager.getProtectionManager(world);
+    // }
+  }
 
-	// @Override
-	// public void onDisable() {
-	// ProtectionManager.saveAll();
-	// }
+  // @Override
+  // public void onDisable() {
+  // ProtectionManager.saveAll();
+  // }
 
 }

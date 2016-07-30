@@ -6,16 +6,16 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
 
 public class SaveGsCommand extends ParamlessGsCommand {
 
-	protected SaveGsCommand() {
-		super("save");
-	}
+  protected SaveGsCommand() {
+    super("save");
+  }
 
-	@Override
-	protected boolean execute(CommandContext context) {
-		GsManager.saveAll();
-		String message = "Alle Grundstücke wurden gespeichert.";
-		MinecraftUtils.sendInfo(context.getSender(), message);
-		return true;
-	}
+  @Override
+  protected boolean execute(CommandContext context) {
+    GsManager.saveAll();
+    String message = "Alle Grundstücke wurden gespeichert.";
+    MinecraftUtils.sendInfo(context.getSender(), message);
+    return true;
+  }
 
 }

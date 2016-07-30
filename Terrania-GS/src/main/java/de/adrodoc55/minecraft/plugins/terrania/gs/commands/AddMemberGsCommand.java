@@ -20,47 +20,44 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.Grundstueck;
 
 public class AddMemberGsCommand extends ConcreteGsCommand {
 
-	private static final String MEMBER = "member";
+  private static final String MEMBER = "member";
 
-	public AddMemberGsCommand() {
-		super("addmember");
-	}
+  public AddMemberGsCommand() {
+    super("addmember");
+  }
 
-	@Override
-	protected boolean execute(CommandContext context, Grundstueck gs) {
-		// FIXME: Permissions!!!
-		DefaultDomain members = gs.getRegion().getMembers();
-		String memberName = context.get(MEMBER);
-		members.addPlayer(memberName);
-		String message = String
-				.format("Der Spieler %s wurde erfolgreich dem Grundstück %s in der Welt %s hinzugefügt.",
-						memberName, gs.getName(), gs.getWorld());
-		MinecraftUtils.sendInfo(context.getSender(), message);
-		return true;
-	}
+  @Override
+  protected boolean execute(CommandContext context, Grundstueck gs) {
+    // FIXME: Permissions!!!
+    DefaultDomain members = gs.getRegion().getMembers();
+    String memberName = context.get(MEMBER);
+    members.addPlayer(memberName);
+    String message = String.format(
+        "Der Spieler %s wurde erfolgreich dem Grundstück %s in der Welt %s hinzugefügt.",
+        memberName, gs.getName(), gs.getWorld());
+    MinecraftUtils.sendInfo(context.getSender(), message);
+    return true;
+  }
 
-	@Override
-	protected void addAdditionalParams(ParameterList pl) {
-		pl.add(new Parameter(MEMBER));
-	}
+  @Override
+  protected void addAdditionalParams(ParameterList pl) {
+    pl.add(new Parameter(MEMBER));
+  }
 
-	@Override
-	protected List<String> tabCompleteAdditionalParams(
-			TabCompleteContext context) {
-		String key = context.getKeyToComplete();
-		if (MEMBER.equals(key)) {
-			Collection<? extends Player> onlinePlayers = Bukkit
-					.getOnlinePlayers();
-			List<String> names = CollectionUtils.collect(onlinePlayers,
-					new Closure<Player, String>() {
-						@Override
-						public String call(Player p) {
-							return p.getName();
-						}
-					});
-			return names;
-		}
-		return new ArrayList<String>(0);
-	}
+  @Override
+  protected List<String> tabCompleteAdditionalParams(TabCompleteContext context) {
+    String key = context.getKeyToComplete();
+    if (MEMBER.equals(key)) {
+      Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+      List<String> names = CollectionUtils.collect(onlinePlayers, new Closure<Player, String>() {
+        @Override
+        public String call(Player p) {
+          return p.getName();
+        }
+      });
+      return names;
+    }
+    return new ArrayList<String>(0);
+  }
 
 }

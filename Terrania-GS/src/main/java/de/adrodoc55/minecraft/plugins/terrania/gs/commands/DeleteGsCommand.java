@@ -12,29 +12,27 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
 
 public class DeleteGsCommand extends ConcreteGsCommand {
 
-    protected DeleteGsCommand() {
-        super("delete");
-    }
+  protected DeleteGsCommand() {
+    super("delete");
+  }
 
-    @Override
-    protected boolean execute(CommandContext context, Grundstueck grundstueck) {
-        String message = String.format(
-                "Das Grundstück %s wurde erfolgreich entfernt.",
-                grundstueck.getName());
-        GsManager.remove(grundstueck);
-        MinecraftUtils.sendInfo(context.getSender(), message);
-        return true;
-    }
+  @Override
+  protected boolean execute(CommandContext context, Grundstueck grundstueck) {
+    String message =
+        String.format("Das Grundstück %s wurde erfolgreich entfernt.", grundstueck.getName());
+    GsManager.remove(grundstueck);
+    MinecraftUtils.sendInfo(context.getSender(), message);
+    return true;
+  }
 
-    @Override
-    protected void addAdditionalParams(ParameterList parameterList) {
+  @Override
+  protected void addAdditionalParams(ParameterList parameterList) {
 
-    }
+  }
 
-    @Override
-    protected List<String> tabCompleteAdditionalParams(
-            TabCompleteContext context) {
-        return new ArrayList<String>(0);
-    }
+  @Override
+  protected List<String> tabCompleteAdditionalParams(TabCompleteContext context) {
+    return new ArrayList<String>(0);
+  }
 
 }

@@ -15,37 +15,35 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.GsManager;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlGsRoot {
 
-	@XmlElement(name = "grundstueck")
-	private Set<XmlGs> grundstueck;
+  @XmlElement(name = "grundstueck")
+  private Set<XmlGs> grundstueck;
 
-	public XmlGsRoot() {
-	}
+  public XmlGsRoot() {}
 
-	public XmlGsRoot(GsManager gsm) {
-		Set<XmlGs> xmlGsSet = new HashSet<XmlGs>(gsm.getGrundstuecke().size());
-		for (Grundstueck grundstueck : gsm.getGrundstuecke()) {
-			XmlGs xmlGs = new XmlGs(grundstueck);
-			xmlGsSet.add(xmlGs);
-		}
-		grundstueck = xmlGsSet;
-	}
+  public XmlGsRoot(GsManager gsm) {
+    Set<XmlGs> xmlGsSet = new HashSet<XmlGs>(gsm.getGrundstuecke().size());
+    for (Grundstueck grundstueck : gsm.getGrundstuecke()) {
+      XmlGs xmlGs = new XmlGs(grundstueck);
+      xmlGsSet.add(xmlGs);
+    }
+    grundstueck = xmlGsSet;
+  }
 
-	/**
-	 * @return the grundstueck. Never null.
-	 */
-	public Set<XmlGs> getGrundstueck() {
-		if (grundstueck == null) {
-			grundstueck = new HashSet<XmlGs>();
-		}
-		return grundstueck;
-	}
+  /**
+   * @return the grundstueck. Never null.
+   */
+  public Set<XmlGs> getGrundstueck() {
+    if (grundstueck == null) {
+      grundstueck = new HashSet<XmlGs>();
+    }
+    return grundstueck;
+  }
 
-	/**
-	 * @param grundstueck
-	 *            the grundstueck to set
-	 */
-	public void setGrundstueck(Set<XmlGs> grundstueck) {
-		this.grundstueck = grundstueck;
-	}
+  /**
+   * @param grundstueck the grundstueck to set
+   */
+  public void setGrundstueck(Set<XmlGs> grundstueck) {
+    this.grundstueck = grundstueck;
+  }
 
 }

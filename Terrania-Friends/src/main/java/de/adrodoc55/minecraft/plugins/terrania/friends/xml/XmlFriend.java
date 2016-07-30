@@ -11,22 +11,21 @@ import org.bukkit.OfflinePlayer;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlFriend {
 
-	@XmlAttribute
-	private String uuid;
+  @XmlAttribute
+  private String uuid;
 
-	public XmlFriend() {
-	}
+  public XmlFriend() {}
 
-	public XmlFriend(OfflinePlayer player) {
-		this.uuid = String.valueOf(player.getUniqueId());
-	}
+  public XmlFriend(OfflinePlayer player) {
+    this.uuid = String.valueOf(player.getUniqueId());
+  }
 
-	public String getUuid() {
-		return uuid;
-	}
+  public String getUuid() {
+    return uuid;
+  }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
 
 }

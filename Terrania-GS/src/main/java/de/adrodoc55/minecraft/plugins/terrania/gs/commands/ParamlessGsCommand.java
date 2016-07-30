@@ -8,18 +8,18 @@ import de.adrodoc55.minecraft.plugins.common.command.TabCompleteContext;
 
 public abstract class ParamlessGsCommand extends GsCommand {
 
-	protected ParamlessGsCommand(String name) {
-		super(name);
-	}
+  protected ParamlessGsCommand(String name) {
+    super(name);
+  }
 
-	@Override
-	protected final ParameterList getParamDefinition() {
-		return new ParameterList();
-	}
+  @Override
+  protected final ParameterList getParamDefinition() {
+    return new ParameterList();
+  }
 
-	@Override
-	public final List<String> tabComplete(TabCompleteContext context) {
-		return new ArrayList<String>(0);
-	}
+  @Override
+  public final List<String> tabComplete(TabCompleteContext context) {
+    return new ArrayList<String>(0);
+  }
 
 }

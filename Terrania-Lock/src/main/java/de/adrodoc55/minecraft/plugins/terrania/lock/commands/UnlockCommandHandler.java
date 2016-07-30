@@ -10,26 +10,25 @@ import de.adrodoc55.minecraft.plugins.magic_protection.protection.ProtectionMana
 
 public class UnlockCommandHandler extends AbstractLockCommand {
 
-	public static final String COMMAND = "unlock";
+  public static final String COMMAND = "unlock";
 
-	public UnlockCommandHandler() {
-		super(COMMAND);
-	}
+  public UnlockCommandHandler() {
+    super(COMMAND);
+  }
 
-	@Override
-	public boolean execute(CommandContext context, Player player, Block block) {
-		OfflinePlayer blockProtector = ProtectionManager
-				.getBlockProtector(block);
-		if (!player.equals(blockProtector)) {
-			String message = "Dieser Block wird nicht von dir beschützt.";
-			MinecraftUtils.sendError(player, message);
-			return false;
-		}
-		ProtectionManager.removeBlockProtection(block);
-		String message = "Der Block ist jetzt nicht mehr abgeschlossen.";
-		MinecraftUtils.sendInfo(player, message);
-		return true;
+  @Override
+  public boolean execute(CommandContext context, Player player, Block block) {
+    OfflinePlayer blockProtector = ProtectionManager.getBlockProtector(block);
+    if (!player.equals(blockProtector)) {
+      String message = "Dieser Block wird nicht von dir beschützt.";
+      MinecraftUtils.sendError(player, message);
+      return false;
+    }
+    ProtectionManager.removeBlockProtection(block);
+    String message = "Der Block ist jetzt nicht mehr abgeschlossen.";
+    MinecraftUtils.sendInfo(player, message);
+    return true;
 
-	}
+  }
 
 }

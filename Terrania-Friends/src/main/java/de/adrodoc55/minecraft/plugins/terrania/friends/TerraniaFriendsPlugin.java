@@ -9,42 +9,42 @@ import de.adrodoc55.minecraft.plugins.terrania.friends.commands.FriendsCommandDe
 
 public class TerraniaFriendsPlugin extends JavaPlugin {
 
-	private static Logger LOGGER;
+  private static Logger LOGGER;
 
-	public static Logger logger() {
-		return LOGGER;
-	}
+  public static Logger logger() {
+    return LOGGER;
+  }
 
-	private static TerraniaFriendsPlugin INSTANCE;
+  private static TerraniaFriendsPlugin INSTANCE;
 
-	public static TerraniaFriendsPlugin instance() {
-		return INSTANCE;
-	}
+  public static TerraniaFriendsPlugin instance() {
+    return INSTANCE;
+  }
 
-	public TerraniaFriendsPlugin() {
-		LOGGER = Logger.getLogger(this);
-		INSTANCE = this;
-	}
+  public TerraniaFriendsPlugin() {
+    LOGGER = Logger.getLogger(this);
+    INSTANCE = this;
+  }
 
-	@Override
-	public void onEnable() {
-		PluginCommand gs = getCommand(FriendsCommand.COMMAND);
-		FriendsCommandDelegator gsCommand = new FriendsCommandDelegator();
-		gs.setExecutor(gsCommand);
-		gs.setTabCompleter(gsCommand);
+  @Override
+  public void onEnable() {
+    PluginCommand gs = getCommand(FriendsCommand.COMMAND);
+    FriendsCommandDelegator gsCommand = new FriendsCommandDelegator();
+    gs.setExecutor(gsCommand);
+    gs.setTabCompleter(gsCommand);
 
-		// PluginManager pluginManager = getServer().getPluginManager();
-		// pluginManager.registerEvents(new GsListener(), this);
+    // PluginManager pluginManager = getServer().getPluginManager();
+    // pluginManager.registerEvents(new GsListener(), this);
 
-		// Instantiate the GSManagers
-		// for (World world : getServer().getWorlds()) {
-		// GsManager.getGSManager(world);
-		// }
-	}
+    // Instantiate the GSManagers
+    // for (World world : getServer().getWorlds()) {
+    // GsManager.getGSManager(world);
+    // }
+  }
 
-	@Override
-	public void onDisable() {
-		FriendsManager.saveAll();
-	}
+  @Override
+  public void onDisable() {
+    FriendsManager.saveAll();
+  }
 
 }

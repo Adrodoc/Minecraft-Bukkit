@@ -11,42 +11,42 @@ import de.adrodoc55.minecraft.plugins.terrania.gs.commands.GsCommandDelegator;
 
 public class TerraniaGsPlugin extends JavaPlugin {
 
-	private static Logger LOGGER;
+  private static Logger LOGGER;
 
-	public static Logger logger() {
-		return LOGGER;
-	}
+  public static Logger logger() {
+    return LOGGER;
+  }
 
-	private static TerraniaGsPlugin INSTANCE;
+  private static TerraniaGsPlugin INSTANCE;
 
-	public static TerraniaGsPlugin instance() {
-		return INSTANCE;
-	}
+  public static TerraniaGsPlugin instance() {
+    return INSTANCE;
+  }
 
-	public TerraniaGsPlugin() {
-		LOGGER = Logger.getLogger(this);
-		INSTANCE = this;
-	}
+  public TerraniaGsPlugin() {
+    LOGGER = Logger.getLogger(this);
+    INSTANCE = this;
+  }
 
-	@Override
-	public void onEnable() {
-		PluginCommand gs = getCommand(GsCommand.COMMAND);
-		GsCommandDelegator gsCommand = new GsCommandDelegator();
-		gs.setExecutor(gsCommand);
-		gs.setTabCompleter(gsCommand);
+  @Override
+  public void onEnable() {
+    PluginCommand gs = getCommand(GsCommand.COMMAND);
+    GsCommandDelegator gsCommand = new GsCommandDelegator();
+    gs.setExecutor(gsCommand);
+    gs.setTabCompleter(gsCommand);
 
-		PluginManager pluginManager = getServer().getPluginManager();
-		pluginManager.registerEvents(new GsListener(), this);
+    PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(new GsListener(), this);
 
-		// Instantiate the GSManagers
-		for (World world : getServer().getWorlds()) {
-			GsManager.getGSManager(world);
-		}
-	}
+    // Instantiate the GSManagers
+    for (World world : getServer().getWorlds()) {
+      GsManager.getGSManager(world);
+    }
+  }
 
-	@Override
-	public void onDisable() {
-		GsManager.saveAll();
-	}
+  @Override
+  public void onDisable() {
+    GsManager.saveAll();
+  }
 
 }

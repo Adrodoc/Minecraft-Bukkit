@@ -15,42 +15,41 @@ import org.bukkit.OfflinePlayer;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlFriendOwner {
 
-	@XmlAttribute
-	private String uuid;
+  @XmlAttribute
+  private String uuid;
 
-	@XmlElement(name = "friend")
-	private Set<XmlFriend> friends;
+  @XmlElement(name = "friend")
+  private Set<XmlFriend> friends;
 
-	public XmlFriendOwner() {
-	}
+  public XmlFriendOwner() {}
 
-	public XmlFriendOwner(OfflinePlayer player, Set<OfflinePlayer> friends) {
-		this.uuid = String.valueOf(player.getUniqueId());
-		Set<XmlFriend> xmlFriendSet = new HashSet<XmlFriend>(friends.size());
-		for (OfflinePlayer friend : friends) {
-			XmlFriend xmlFriend = new XmlFriend(friend);
-			xmlFriendSet.add(xmlFriend);
-		}
-		this.friends = xmlFriendSet;
-	}
+  public XmlFriendOwner(OfflinePlayer player, Set<OfflinePlayer> friends) {
+    this.uuid = String.valueOf(player.getUniqueId());
+    Set<XmlFriend> xmlFriendSet = new HashSet<XmlFriend>(friends.size());
+    for (OfflinePlayer friend : friends) {
+      XmlFriend xmlFriend = new XmlFriend(friend);
+      xmlFriendSet.add(xmlFriend);
+    }
+    this.friends = xmlFriendSet;
+  }
 
-	public String getUuid() {
-		return uuid;
-	}
+  public String getUuid() {
+    return uuid;
+  }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
 
-	public Set<XmlFriend> getFriends() {
-		if (friends == null) {
-			friends = new HashSet<XmlFriend>();
-		}
-		return friends;
-	}
+  public Set<XmlFriend> getFriends() {
+    if (friends == null) {
+      friends = new HashSet<XmlFriend>();
+    }
+    return friends;
+  }
 
-	public void setFriends(Set<XmlFriend> friends) {
-		this.friends = friends;
-	}
+  public void setFriends(Set<XmlFriend> friends) {
+    this.friends = friends;
+  }
 
 }

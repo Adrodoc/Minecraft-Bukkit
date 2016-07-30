@@ -9,34 +9,34 @@ import de.adrodoc55.minecraft.plugins.terrania.lock.commands.UnlockCommandHandle
 
 public class TerraniaLockPlugin extends JavaPlugin {
 
-	private static Logger LOGGER;
+  private static Logger LOGGER;
 
-	public static Logger logger() {
-		return LOGGER;
-	}
+  public static Logger logger() {
+    return LOGGER;
+  }
 
-	private static TerraniaLockPlugin INSTANCE;
+  private static TerraniaLockPlugin INSTANCE;
 
-	public static TerraniaLockPlugin instance() {
-		return INSTANCE;
-	}
+  public static TerraniaLockPlugin instance() {
+    return INSTANCE;
+  }
 
-	public TerraniaLockPlugin() {
-		LOGGER = Logger.getLogger(this);
-		INSTANCE = this;
-	}
+  public TerraniaLockPlugin() {
+    LOGGER = Logger.getLogger(this);
+    INSTANCE = this;
+  }
 
-	@Override
-	public void onEnable() {
-		PluginCommand lockCommand = getCommand(LockCommandHandler.COMMAND);
-		LockCommandHandler lockHandler = new LockCommandHandler();
-		lockCommand.setExecutor(lockHandler);
-		lockCommand.setTabCompleter(lockHandler);
+  @Override
+  public void onEnable() {
+    PluginCommand lockCommand = getCommand(LockCommandHandler.COMMAND);
+    LockCommandHandler lockHandler = new LockCommandHandler();
+    lockCommand.setExecutor(lockHandler);
+    lockCommand.setTabCompleter(lockHandler);
 
-		PluginCommand unlockCommand = getCommand(UnlockCommandHandler.COMMAND);
-		UnlockCommandHandler unlockHandler = new UnlockCommandHandler();
-		unlockCommand.setExecutor(unlockHandler);
-		unlockCommand.setTabCompleter(unlockHandler);
-	}
+    PluginCommand unlockCommand = getCommand(UnlockCommandHandler.COMMAND);
+    UnlockCommandHandler unlockHandler = new UnlockCommandHandler();
+    unlockCommand.setExecutor(unlockHandler);
+    unlockCommand.setTabCompleter(unlockHandler);
+  }
 
 }

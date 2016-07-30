@@ -8,17 +8,17 @@ import org.bukkit.event.world.WorldUnloadEvent;
 
 public class FriendsListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void worldSaved(WorldSaveEvent e) {
-		FriendsManager.saveAll();
-	}
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void worldSaved(WorldSaveEvent e) {
+    FriendsManager.saveAll();
+  }
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void worldUnloaded(WorldUnloadEvent e) {
-		if (e.isCancelled()) {
-			return;
-		}
-		FriendsManager.saveAll();
-	}
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void worldUnloaded(WorldUnloadEvent e) {
+    if (e.isCancelled()) {
+      return;
+    }
+    FriendsManager.saveAll();
+  }
 
 }

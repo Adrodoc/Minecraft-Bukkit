@@ -6,21 +6,21 @@ import org.bukkit.plugin.Plugin;
 
 public class BlockProtectorMetadata extends MetadataValueAdapter {
 
-	private OfflinePlayer protector;
+  private OfflinePlayer protector;
 
-	public BlockProtectorMetadata(Plugin owningPlugin, OfflinePlayer protector) {
-		super(owningPlugin);
-		this.protector = protector;
-	}
+  public BlockProtectorMetadata(Plugin owningPlugin, OfflinePlayer protector) {
+    super(owningPlugin);
+    this.protector = protector;
+  }
 
-	@Override
-	public OfflinePlayer value() {
-		return protector;
-	}
+  @Override
+  public OfflinePlayer value() {
+    return protector;
+  }
 
-	@Override
-	public void invalidate() {
-		protector = null;
-	}
+  @Override
+  public void invalidate() {
+    protector = null;
+  }
 
 }
