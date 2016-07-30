@@ -1,7 +1,6 @@
 package de.adrodoc55.minecraft.plugins.common.utils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,6 +9,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 public class MinecraftUtils {
 
@@ -35,8 +37,10 @@ public class MinecraftUtils {
     return location;
   }
 
-  private static Thread thread;
-  private static Map<CommandSender, String> lastMessages = new HashMap<CommandSender, String>();
+  private static Cache<CommandSender, String> MESSAGES = CacheBuilder.newBuilder()//
+      .concurrencyLevel(1)//
+      .expireAfterWrite(9, TimeUnit.SECONDS)//
+      .build();
 
   /**
    * Sendet eine Nachricht an den Spieler, falls in den letzten 9 Sekunden nicht die selbe Nachricht
@@ -51,26 +55,12 @@ public class MinecraftUtils {
     if (commandSender == null || message == null) {
       return;
     }
-    String lastMessage = lastMessages.get(commandSender);
+    String lastMessage = MESSAGES.getIfPresent(commandSender);
     if (message.equals(lastMessage)) {
       return;
     }
-    if (thread != null)
-      thread.interrupt();
-    lastMessages.put(commandSender, message);
+    MESSAGES.put(commandSender, message);
     commandSender.sendMessage(message);
-    thread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(9000);
-          lastMessages.remove(commandSender);
-        } catch (InterruptedException e) {
-          // NOT lastMessages.remove(player);
-        }
-      }
-    });
-    thread.start();
   }
 
   public static void sendInfo(final CommandSender commandSender, String message) {
