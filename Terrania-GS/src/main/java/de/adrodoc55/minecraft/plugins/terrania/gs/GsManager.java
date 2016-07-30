@@ -315,6 +315,14 @@ public class GsManager {
     region.setPriority(20);
     region.setFlag(DefaultFlag.BUILD, State.ALLOW);
     region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.MEMBERS);
+    region.setFlag(DefaultFlag.BLOCK_BREAK, State.ALLOW);
+    region.setFlag(DefaultFlag.BLOCK_BREAK.getRegionGroupFlag(), RegionGroup.MEMBERS);
+    region.setFlag(DefaultFlag.BLOCK_PLACE, State.ALLOW);
+    region.setFlag(DefaultFlag.BLOCK_PLACE.getRegionGroupFlag(), RegionGroup.MEMBERS);
+    region.setFlag(DefaultFlag.USE, State.ALLOW);
+    region.setFlag(DefaultFlag.USE.getRegionGroupFlag(), RegionGroup.MEMBERS);
+    region.setFlag(DefaultFlag.INTERACT, State.ALLOW);
+    region.setFlag(DefaultFlag.INTERACT.getRegionGroupFlag(), RegionGroup.MEMBERS);
   }
 
   /**
