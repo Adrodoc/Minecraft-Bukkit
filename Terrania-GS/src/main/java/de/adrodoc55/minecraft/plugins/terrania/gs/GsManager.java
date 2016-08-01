@@ -183,7 +183,13 @@ public class GsManager {
     Set<XmlGs> xmlGrundstuecke = root.getGrundstueck();
     grundstuecke = new HashSet<Grundstueck>(xmlGrundstuecke.size());
     for (XmlGs xmlGs : xmlGrundstuecke) {
-      grundstuecke.add(new Grundstueck(world, xmlGs));
+      try {
+        grundstuecke.add(new Grundstueck(world, xmlGs));
+      } catch (ValidationException ex) {
+        String message = String.format("Lösche Grundstück %s in Welt %s. Grund: %s",
+            xmlGs.getName(), world.getName(), ex.getMessage());
+        logger().warn(message);
+      }
     }
     updateAlleGrundstuecke();
     setupUpdateScheduler();

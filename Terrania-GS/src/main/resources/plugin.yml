@@ -1,6 +1,6 @@
 name: Terrania-GS
 author: Adrodoc55
-version: 0.9.4
+version: 0.9.5
 main: de.adrodoc55.minecraft.plugins.terrania.gs.TerraniaGsPlugin
 
 depend: [WorldGuard]

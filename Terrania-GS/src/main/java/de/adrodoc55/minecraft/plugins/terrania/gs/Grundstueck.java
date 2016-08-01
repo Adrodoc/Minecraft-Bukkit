@@ -46,7 +46,7 @@ public class Grundstueck {
     expiration = LocalDate.now().minusDays(1);
   }
 
-  public Grundstueck(World world, XmlGs gs) {
+  public Grundstueck(World world, XmlGs gs) throws ValidationException {
     this.world = world;
     name = gs.getName();
     String owner = gs.getOwner();
