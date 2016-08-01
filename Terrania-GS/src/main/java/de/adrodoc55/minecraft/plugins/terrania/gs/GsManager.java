@@ -248,8 +248,9 @@ public class GsManager {
       try {
         gs.validate();
       } catch (ValidationException ex) {
-        String message = String.format("Lösche Grundstück %s in Welt %s. Grund: %s", gs.getName(),
-            gs.getWorld().getName(), ex.getMessage());
+        World world = gs.getInvalidWorld();
+        String message = String.format("Lösche Grundstück %s in Welt %s. Grund: %s",
+            gs.getInvalidName(), world != null ? world.getName() : null, ex.getMessage());
         logger().warn(message);
         gs.invalidate();
         iterator.remove();

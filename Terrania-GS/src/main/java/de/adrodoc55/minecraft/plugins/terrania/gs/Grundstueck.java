@@ -79,6 +79,15 @@ public class Grundstueck {
   }
 
   /**
+   * Returns the world of this gs. May be null. This method does not validate this gs.
+   *
+   * @return world - the {@link #world} of this gs.
+   */
+  public @Nullable World getInvalidWorld() {
+    return world;
+  }
+
+  /**
    * Returns the region of this gs. Never null.
    *
    * @return region - the region of this gs.
@@ -95,7 +104,7 @@ public class Grundstueck {
    *
    * @return region - the region of this gs.
    */
-  private ProtectedRegion getInvalidRegion() {
+  private @Nullable ProtectedRegion getInvalidRegion() {
     return JavaPlugin.getPlugin(WorldGuardPlugin.class).getRegionManager(world).getRegion(name);
   }
 
@@ -108,6 +117,15 @@ public class Grundstueck {
    */
   public String getName() {
     validate();
+    return name;
+  }
+
+  /**
+   * Returns the name of this gs. May be null. This method does not validate this gs.
+   *
+   * @return name - the {@link #name} of this gs.
+   */
+  public @Nullable String getInvalidName() {
     return name;
   }
 
@@ -128,7 +146,7 @@ public class Grundstueck {
    *
    * @return sign - the sign of this gs.
    */
-  private Sign getInvalidSign() {
+  private @Nullable Sign getInvalidSign() {
     BlockState state = sign.getState();
     if (state instanceof Sign) {
       return (Sign) state;
